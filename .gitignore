@@ -2,11 +2,15 @@
 node_modules/
 dist/
 *.log
+.venv/
+.matplotlib-cache/
 .DS_Store
 **/__pycache__/
 **/*.py[cod]
 **/.pytest_cache/
 book/source/build*/
+book/build-*/
+lab/application-cases-compact.json
 book/source/*.aux
 book/source/*.fdb_latexmk
 book/source/*.fls

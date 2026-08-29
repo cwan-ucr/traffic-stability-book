@@ -1,0 +1,616 @@
+\documentclass[11pt,a4paper,openany]{book}
+
+\usepackage{fontspec}
+\setmainfont{Times New Roman}
+\setsansfont{Arial}
+\setmonofont{Menlo}
+\usepackage[a4paper,inner=2.7cm,outer=2.2cm,top=2.45cm,bottom=2.65cm,headheight=16pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{graphicx,booktabs,longtable,tabularx,array}
+\usepackage{xcolor,tcolorbox,enumitem,titlesec,fancyhdr,caption,microtype}
+\tcbuselibrary{skins,breakable}
+\usepackage[colorlinks=true,linkcolor=blue!45!black,urlcolor=blue!45!black,citecolor=blue!45!black]{hyperref}
+\numberwithin{equation}{chapter}
+\numberwithin{figure}{chapter}
+\numberwithin{table}{chapter}
+\setcounter{tocdepth}{1}
+\setcounter{secnumdepth}{2}
+\setlength{\parindent}{1.5em}
+\setlength{\parskip}{0.25em}
+\setlength{\emergencystretch}{2em}
+
+\definecolor{navy}{HTML}{1F4E79}
+\definecolor{teal}{HTML}{1E6E5B}
+\definecolor{brick}{HTML}{B33A3A}
+\definecolor{papergray}{HTML}{F3F5F6}
+
+\titleformat{\part}[display]{\centering\sffamily\bfseries\color{navy}}{PART \Roman{part}}{1em}{\Huge}
+\titleformat{\chapter}[display]{\sffamily\bfseries}{\color{navy}\Large CHAPTER \thechapter}{0.5em}{\Huge}[\vspace{0.5em}\color{navy}\titlerule]
+\titleformat{\section}{\Large\sffamily\bfseries\color{navy}}{\thesection}{0.7em}{}
+\titleformat{\subsection}{\large\sffamily\bfseries}{\thesubsection}{0.7em}{}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE]{\small\color{navy}\thepage\qquad\nouppercase{\leftmark}}
+\fancyhead[RO]{\small\color{navy}\nouppercase{\rightmark}\qquad\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\color{navy}\thepage}\renewcommand{\headrulewidth}{0pt}}
+\captionsetup{font=small,labelfont={bf,color=navy},justification=justified,singlelinecheck=false}
+
+\tcbset{
+  keybox/.style={breakable,colback=navy!5,colframe=navy!65,boxrule=0.7pt,arc=2pt},
+  resultbox/.style={breakable,colback=teal!5,colframe=teal!70,boxrule=0.7pt,arc=2pt},
+  cautionbox/.style={breakable,colback=brick!5,colframe=brick!65,boxrule=0.7pt,arc=2pt}
+}
+\newcommand{\chapterguide}[1]{\begin{tcolorbox}[keybox,title=Chapter guide]#1\end{tcolorbox}}
+\newcommand{\chapterend}[1]{\section*{Chapter summary}\addcontentsline{toc}{section}{Chapter summary}\begin{tcolorbox}[resultbox]#1\end{tcolorbox}\subsection*{Questions for reflection}\begin{enumerate}[leftmargin=1.7em]\item Reconstruct the main argument without looking at the final criterion. Which assumptions are essential?\item Design one numerical check that could falsify the conclusion rather than merely illustrate it.\end{enumerate}\clearpage}
+\newcommand{\dd}{\,\mathrm{d}}
+\newcommand{\Rea}{\operatorname{Re}}
+\newcommand{\Ima}{\operatorname{Im}}
+
+\hypersetup{
+ pdftitle={Traffic-Flow Stability: Microscopic Models, Macroscopic Continuum Theory, Experiments, and Control},
+ pdfauthor={Changxin Wan},
+ pdfsubject={Traffic-flow stability, numerical experiments, continuum models, and control applications},
+ pdfkeywords={traffic stability, IDM, string stability, LWR, PW, ARZ, nonlinear waves, AV control}
+}
+
+\begin{document}
+\frontmatter
+\begin{titlepage}
+\centering
+\vspace*{3.2cm}
+{\sffamily\bfseries\color{navy}\fontsize{29}{34}\selectfont Traffic-Flow Stability\par}
+\vspace{0.6cm}
+{\sffamily\Large Microscopic Models, Macroscopic Continuum Theory,\par Numerical Experiments, and Control\par}
+\vspace{2cm}
+{\Large Changxin Wan\par}
+\vfill
+{\large English reader's edition\par}
+{\small August 2026\par}
+\end{titlepage}
+
+\chapter*{Preface to the English Edition}
+\addcontentsline{toc}{chapter}{Preface to the English Edition}
+Traffic congestion is not only a question of demand exceeding capacity. Even when the average demand is held constant, a small speed fluctuation may decay, persist, or amplify into stop-and-go traffic. Stability analysis provides a language for deciding which of these outcomes is expected and for designing vehicles or traffic controls that change the outcome.
+
+This volume is a self-contained English reader's edition of the companion Chinese book and online laboratory. It preserves the complete analytical route: car-following dynamics, local and string stability, heterogeneous and connected vehicles, weakly nonlinear waves, continuum traffic models, microscopic--macroscopic consistency, trajectory-data evidence, and control applications. The text emphasizes derivations, reproducible numerical procedures, and measurements that connect a theorem to an observable plot.
+
+The browser laboratory is bilingual. Every experiment should be read in four layers: the equilibrium state, the analytical prediction, the imposed perturbation, and the measured response. A colored trajectory diagram alone is not a stability proof; it becomes evidence only when the working point, perturbation, numerical resolution, and quantitative metric are stated.
+
+\tableofcontents
+
+\mainmatter
+\part{Microscopic Foundations}
+
+\chapter{Car-Following Models: From Stimulus--Response to IDM}
+\chapterguide{This chapter introduces the state variables and modeling assumptions needed before stability can be discussed. It also explains how a ring-road simulation is advanced in time.}
+
+\section{What a car-following law describes}
+Let vehicle $n-1$ be the leader of vehicle $n$. With position $x_n$, speed $v_n=\dot x_n$, vehicle length $\ell$, net gap
+\begin{equation}
+s_n=x_{n-1}-x_n-\ell,
+\end{equation}
+and approach rate $\Delta v_n=v_n-v_{n-1}$, a broad model class is
+\begin{equation}
+\dot v_n=F(s_n,v_n,\Delta v_n).
+\end{equation}
+The gap is a state, not an external parameter, because
+\begin{equation}
+\dot s_n=v_{n-1}-v_n=-\Delta v_n.
+\end{equation}
+On a ring of length $L$, indices are periodic and $x_0$ is interpreted as $x_N+L$. On an open road, the first vehicle instead requires a prescribed trajectory or a boundary controller. This distinction changes the admissible spatial modes and the meaning of disturbance amplification.
+
+\section{GM, OVM, FVDM, and IDM}
+The early Gazis--Herman--Rothery family formalizes a stimulus--response idea,
+\begin{equation}
+\dot v_n(t+\tau)=\alpha\frac{v_n(t)^m}{s_n(t)^l}\bigl[v_{n-1}(t)-v_n(t)\bigr].
+\end{equation}
+The optimal-velocity model separates relaxation toward a desired speed from the current gap,
+\begin{equation}
+\dot v_n=a\bigl[V(s_n)-v_n\bigr],
+\end{equation}
+and the full velocity-difference model adds relative-speed damping. The Intelligent Driver Model (IDM) combines free acceleration and collision-avoidance interaction:
+\begin{align}
+\dot v_n&=a\left[1-\left(\frac{v_n}{v_0}\right)^\delta-\left(\frac{s^*(v_n,\Delta v_n)}{s_n}\right)^2\right],\\
+s^*(v,\Delta v)&=s_0+vT+\frac{v\Delta v}{2\sqrt{ab}}.
+\end{align}
+Here $v_0$ is desired speed, $T$ desired time gap, $s_0$ jam clearance, and $a,b$ the characteristic acceleration and comfortable deceleration. IDM is continuous, collision-averse under its intended operating assumptions, and has a physically interpretable equilibrium fundamental diagram.
+
+\section{A ring-road RK4 update}
+For state $y=(x_1,\ldots,x_N,v_1,\ldots,v_N)^\top$ and derivative $\dot y=f(y)$, classical RK4 uses
+\begin{align}
+k_1&=f(y^m),&k_2&=f(y^m+\tfrac12\Delta t k_1),\\
+k_3&=f(y^m+\tfrac12\Delta t k_2),&k_4&=f(y^m+\Delta t k_3),\\
+y^{m+1}&=y^m+\frac{\Delta t}{6}(k_1+2k_2+2k_3+k_4).
+\end{align}
+Every stage must recompute wrapped gaps and accelerations. Reusing the first-stage gap in later stages is not RK4 and can move the measured stability boundary.
+
+For a three-vehicle ring, compute $s_1=x_3+L-x_1-\ell$, $s_2=x_1-x_2-\ell$, and $s_3=x_2-x_3-\ell$ after ordering positions consistently. A convergence check repeats the case with $\Delta t/2$ and compares growth rate, wave speed, and minimum gap.
+
+\chapterend{Microscopic stability begins with a closed dynamical system. Gap evolution, boundary conditions, and numerical-stage consistency are as important as the acceleration formula.}
+
+\chapter{Equilibrium, Linearization, and Three Notions of Stability}
+\chapterguide{We derive the generic linear model and distinguish local, string, and ring stability.}
+
+\section{Uniform equilibrium}
+At equilibrium $s_n=s_e$, $v_n=v_e$, and $\Delta v_n=0$, so
+\begin{equation}
+F(s_e,v_e,0)=0.
+\end{equation}
+For IDM this becomes
+\begin{equation}
+1-\left(\frac{v_e}{v_0}\right)^\delta-\left(\frac{s_0+v_eT}{s_e}\right)^2=0.
+\end{equation}
+On a ring, $s_e=L/N-\ell$. Perturbations $\delta s_n=s_n-s_e$ and $\delta v_n=v_n-v_e$ give, to first order,
+\begin{align}
+\delta\dot s_n&=\delta v_{n-1}-\delta v_n,\\
+\delta\dot v_n&=f_s\delta s_n+f_v\delta v_n+f_{\Delta v}(\delta v_n-\delta v_{n-1}),
+\end{align}
+where the partial derivatives of $F$ are evaluated at equilibrium.
+
+\section{Why differentiating the equilibrium identity is useful}
+If the equilibrium speed is written $v_e=V(s_e)$, differentiate $F(s_e,V(s_e),0)=0$ with respect to $s_e$. The chain rule gives
+\begin{equation}
+f_s+f_vV'(s_e)=0,
+\qquad V'(s_e)=-\frac{f_s}{f_v},
+\end{equation}
+provided $f_v\ne0$. The third argument remains zero along the equilibrium curve, hence its derivative contributes nothing. This identity connects the static equilibrium curve to dynamic partial derivatives but does not determine stability by itself.
+
+\section{Three questions that must not be confused}
+Local stability asks whether one follower returns after its leader is held at equilibrium. String stability asks whether a disturbance is amplified from one vehicle to the next on an open chain. Ring stability asks whether any spatial Fourier mode grows under periodic closure. A locally stable vehicle may still amplify disturbances along a platoon.
+
+\chapterend{Linearization turns a nonlinear model into a derivative-based local description. The same derivatives enter different criteria because local recovery, open-chain propagation, and periodic-mode growth are different experiments.}
+
+\chapter{Local Stability and the Meaning of Two Roots}
+\chapterguide{This chapter derives the second-order local equation, explains its two roots, and connects damping type to a numerical pulse experiment.}
+
+Hold the leader speed fixed, so $\delta v_{n-1}=0$. Since $\delta\dot s=-\delta v$, differentiating once gives $\delta\ddot s=-\delta\dot v$. Substitution yields
+\begin{equation}
+\delta\ddot s-f_v\delta\dot s+f_s\delta s=0.
+\end{equation}
+Trying $\delta s=Ae^{\lambda t}$ gives
+\begin{equation}
+\lambda^2-f_v\lambda+f_s=0.
+\end{equation}
+The real-coefficient Routh--Hurwitz criterion for $\lambda^2+a_1\lambda+a_0$ requires $a_1>0$ and $a_0>0$. Thus
+\begin{equation}
+f_v<0,\qquad f_s>0.
+\end{equation}
+
+\section{Which root is observed?}
+With distinct roots $\lambda_1,\lambda_2$,
+\begin{equation}
+\delta s(t)=C_1e^{\lambda_1t}+C_2e^{\lambda_2t}.
+\end{equation}
+The initial gap and speed determine both coefficients:
+\begin{equation}
+C_1=\frac{\delta\dot s(0)-\lambda_2\delta s(0)}{\lambda_1-\lambda_2},\qquad
+C_2=\frac{\lambda_1\delta s(0)-\delta\dot s(0)}{\lambda_1-\lambda_2}.
+\end{equation}
+Therefore two roots do not imply two alternative physical solutions. They are two components of the same response. At long times the component with the largest real part dominates unless its coefficient is exactly zero. A complex-conjugate pair produces one real damped oscillation.
+
+Writing the polynomial as $\lambda^2+2\zeta\omega_n\lambda+\omega_n^2$ gives
+\begin{equation}
+\omega_n=\sqrt{f_s},\qquad \zeta=\frac{-f_v}{2\sqrt{f_s}}.
+\end{equation}
+$0<\zeta<1$ is underdamped, $\zeta=1$ critical, and $\zeta>1$ overdamped. To make overshoot visible, choose parameters that keep $f_s>0$, $f_v<0$, but reduce $|f_v|$ relative to $2\sqrt{f_s}$, and impose an initial gap pulse with zero initial gap rate.
+
+\chapterend{The two characteristic roots are modal components selected by the initial condition. Stability uses their real parts; overshoot uses their imaginary parts and damping ratio.}
+
+\part{Linear Propagation and Vehicle Cooperation}
+
+\chapter{String Stability, Wavelength, and Frequency}
+\chapterguide{We derive the long-wave and transfer-function criteria and explain why instability usually begins at long wavelength.}
+
+\section{Spatial Fourier modes}
+Use $\delta v_n=\hat v\exp(\lambda t+ikn)$ and $\delta s_n=\hat s\exp(\lambda t+ikn)$. The dimensionless wavenumber $k\in[-\pi,\pi]$ corresponds to wavelength $2\pi/|k|$ vehicles. The angular frequency $\omega$ describes temporal oscillation, while $\Rea\lambda$ is its exponential growth rate and $-\Ima\lambda/k$ is a modal propagation speed in vehicle-index coordinates.
+
+At $k=0$, all vehicles translate together and one neutral eigenvalue is forced by position invariance. The branch leaving this neutral root has
+\begin{equation}
+\lambda(k)=ic_1k+c_2k^2+O(k^3).
+\end{equation}
+Because the first possible real correction is usually the $k^2$ term, crossing $c_2=0$ destabilizes arbitrarily small nonzero $k$. This is why a smooth, long wave is commonly the first unstable mode. It is a structural statement near a neutral conservation mode, not a claim that short-wave instabilities are impossible under delay or nonlocal control.
+
+\section{Transfer function}
+For a harmonic disturbance on an open chain, the speed transfer function is
+\begin{equation}
+G(\lambda)=\frac{f_s-\lambda f_{\Delta v}}
+{\lambda^2-\lambda(f_v+f_{\Delta v})+f_s}.
+\end{equation}
+A frequency-domain string-stability condition is
+\begin{equation}
+|G(i\omega)|\le1\qquad\text{for every }\omega\ge0.
+\end{equation}
+It is stronger than requiring decay of one selected pulse. For a homogeneous ring, closure gives $G(\lambda)^N=1$ and hence $G(\lambda)=e^{i2\pi j/N}$ for one of the admissible modes. The product equals one at the ring eigenvalues; the inequality above instead checks the open-chain transfer function along the entire imaginary axis. These statements operate on different sets of $\lambda$ and are not contradictory.
+
+\section{Small-frequency expansion}
+If $|G_n(i\omega)|^2=1-\eta_n\omega^2+O(\omega^4)$, then
+\begin{equation}
+\ln|G_n(i\omega)|=\frac12\ln(1-\eta_n\omega^2+O(\omega^4))
+=-\frac12\eta_n\omega^2+O(\omega^4),
+\end{equation}
+using $\ln(1+z)=z+O(z^2)$. Products therefore become sums of the long-wave indices $\eta_n$.
+
+\chapterend{Wavelength identifies the spatial mode, frequency identifies temporal forcing, and growth rate decides stability. Long waves are special because they emerge from the neutral translation mode.}
+
+\chapter{IDM Stability and Reproducible Baseline Experiments}
+\chapterguide{The generic criteria are evaluated for IDM and paired with stable and unstable ring-road experiments.}
+
+At equilibrium let $s^*_e=s_0+v_eT$. Direct differentiation gives
+\begin{align}
+f_s&=\frac{2a(s^*_e)^2}{s_e^3},\\
+f_v&=a\left[-\frac{\delta v_e^{\delta-1}}{v_0^\delta}-\frac{2Ts^*_e}{s_e^2}\right],\\
+f_{\Delta v}&=-\frac{a v_es^*_e}{s_e^2\sqrt{ab}}.
+\end{align}
+Substitution into the generic long-wave or transfer-function condition gives the IDM stability boundary. Density must be converted consistently using $\rho=1000/(s_e+\ell)$ in vehicles/km.
+
+\section{Two 1800-s experiments}
+Start a ring in the uniform equilibrium, apply the same small speed pulse to one vehicle, integrate with RK4, and store unwrapped positions. The minimum evidence set is:
+\begin{enumerate}
+\item a position--time trajectory diagram colored by speed;
+\item a speed space--time diagram;
+\item a gap space--time diagram;
+\item speed and gap histories of one selected probe vehicle;
+\item fitted linear growth rate and a $\Delta t$ versus $\Delta t/2$ check.
+\end{enumerate}
+In the stable case, the colored stripe fades and the probe returns to equilibrium. In the unstable case, the stripe broadens into an upstream-moving stop-and-go pattern, while the probe exhibits sustained or growing oscillations. A color map must use fixed limits across cases; autoscaling can make a decaying disturbance appear persistent.
+
+\chapterend{A stability experiment is quantitative when its equilibrium, perturbation, integration error, growth metric, and visualization scales are all controlled.}
+
+\chapter{Acceleration Feedforward, Bilateral, and Multi-Vehicle Feedback}
+\chapterguide{Connected vehicles add acceleration information. We show when a scalar transfer function survives and when a matrix or implicit solve is required.}
+
+With leader-acceleration feedforward,
+\begin{equation}
+\dot v_n=F(s_n,v_n,\Delta v_n)+\kappa\dot v_{n-1},
+\end{equation}
+the local criterion is unchanged if the leader is fixed, but propagation changes because
+\begin{equation}
+G_\kappa(\lambda)=
+\frac{f_s-\lambda f_{\Delta v}+\kappa\lambda^2}
+{\lambda^2-\lambda(f_v+f_{\Delta v})+f_s}.
+\end{equation}
+The gain $\kappa$ can reduce amplification, but excessive gain may create a finite-frequency peak. Stability must therefore be checked over the full frequency range, not only at $\omega\to0$.
+
+If acceleration depends on both front and rear neighbors, all accelerations at the same time step are coupled. A ring simulation must solve
+\begin{equation}
+A\bm a=\bm F
+\end{equation}
+with a cyclic banded matrix at every RK stage. Replacing neighbor accelerations by their previous-step values introduces a numerical delay and can produce disagreement between theory and simulation.
+
+For multiple predecessors,
+\begin{equation}
+\dot v_n=F_n+\sum_{r=1}^{m_+}\alpha_r\dot v_{n-r}
+-\sum_{r=1}^{m_-}\beta_r\dot v_{n+r},
+\end{equation}
+Fourier transformation replaces the spatial kernel by
+\begin{equation}
+P(k)=1-\sum_r\alpha_re^{-ikr}+\sum_r\beta_re^{ikr}.
+\end{equation}
+If vehicles or communication rules vary by type, scalar transfer functions no longer close under a single shift and a cell-level transfer matrix is the appropriate object.
+
+\chapterend{Communication changes propagation before it changes local recovery. Simultaneous acceleration coupling requires an exact linear solve, and heterogeneous nonlocal sensing naturally leads to transfer matrices.}
+
+\chapter{Delay, Rearward Interaction, and Finite Frequency}
+\chapterguide{Delay can leave a long-wave threshold unchanged while destabilizing a finite-frequency band. Rearward gap information must be distinguished from rear-vehicle acceleration.}
+
+A delayed model evaluates part of the response at $t-\tau$. Exponential modes then generate factors $e^{-\lambda\tau}$, so the characteristic equation is transcendental. A low-frequency expansion may show no $O(k^2)$ change while the exact spectrum develops a negative stability margin at finite $\omega$. Therefore delay tests need a history buffer and an initial history function, not only an initial state.
+
+Rearward gap feedback changes the desired-speed or relative-speed response to a following vehicle. It is conceptually different from inserting that follower's acceleration. The former modifies anticipation and wave speed explicitly; the latter creates simultaneous implicit coupling. Signs must be defined from a precise gap convention before a published criterion is reused.
+
+\chapterend{Long-wave stability is not a complete delay certificate. Exact finite-frequency analysis and a correctly initialized history buffer are required.}
+
+\chapter{Heterogeneous Traffic, AV Penetration, Ordering, and Grouping}
+\chapterguide{Mixed traffic separates composition, ordering, and local exposure to connectivity.}
+
+For heterogeneous vehicles, define a transfer function $G_n$ at a common equilibrium flow. Ring closure is
+\begin{equation}
+\prod_{n=1}^{N}G_n(\lambda)=1.
+\end{equation}
+A useful open-chain sufficient condition is $\prod_n|G_n(i\omega)|\le1$ for all frequencies, while controlling every intermediate vehicle requires every prefix product to remain at most one. Ring eigenvalue closure, terminal amplification, and prefix safety are three distinct requirements.
+
+With the small-frequency indices of Chapter 4,
+\begin{equation}
+\ln\left|\prod_{n=1}^{j}G_n(i\omega)\right|
+\approx-\frac12\omega^2\sum_{n=1}^{j}\eta_n.
+\end{equation}
+The final sum depends on composition but not ordering. Every prefix sum depends on ordering. Thus placing unstable HDVs first can produce a large mid-platoon peak even when the terminal product is neutral. On a ring, cyclic relabeling has no physically privileged first vehicle; nevertheless local transient exposure and finite disturbances can still depend on adjacency.
+
+\section{AV penetration--speed stability plane}
+For equilibrium speed $v_e$ and AV share $p$, a composition-level long-wave boundary follows from
+\begin{equation}
+(1-p)\eta_{\mathrm{HDV}}(v_e)+p\eta_{\mathrm{AV}}(v_e)=0,
+\end{equation}
+so, when the denominator is positive,
+\begin{equation}
+p_{\min}(v_e)=
+\frac{-\eta_{\mathrm{HDV}}(v_e)}
+{\eta_{\mathrm{AV}}(v_e)-\eta_{\mathrm{HDV}}(v_e)}.
+\end{equation}
+The laboratory displays the two-dimensional $(v_e,p)$ plane, distinguishes infeasible regions, and overlays the current operating point. This surface is composition-level evidence; a prefix constraint or transfer-matrix spectrum must be added when grouping and multi-predecessor sensing matter.
+
+\section{Why one giant AV group is not automatically optimal}
+If every newly separated group loses one boundary link with enhanced gain, a total stability budget can decrease linearly with group count. One group then maximizes that particular algebraic budget. Deployment may still prefer several groups to reduce maximum distance to an AV, improve robustness to communication loss, or cap prefix amplification. The word ``optimal'' is meaningless without naming the objective and constraints.
+
+\chapterend{Composition controls terminal long-wave budget; ordering controls transient prefixes; grouping controls which communication links exist. These must be evaluated separately.}
+
+\part{Beyond Linear Microscopic Theory}
+
+\chapter{Weakly Nonlinear Stability of IDM}
+\chapterguide{Linear theory predicts the onset of infinitesimal growth. Weakly nonlinear theory predicts amplitude selection, wave shape, and near-threshold evolution.}
+
+Near a neutral boundary introduce slow coordinates $X=\epsilon(n-ct)$ and $T=\epsilon^3t$, expand the state in powers of $\epsilon$, and use solvability at successive orders. Depending on coefficient degeneracy and scaling, the amplitude $u(X,T)$ may satisfy
+\begin{align}
+u_T+Duu_X&=\mu u_{XX} &&\text{(Burgers)},\\
+u_T+\alpha uu_X+\beta u_{XXX}&=0 &&\text{(KdV)},\\
+u_T+\alpha u^2u_X+\beta u_{XXX}&=0 &&\text{(mKdV)},\\
+u_T+\alpha uu_X+\gamma u^2u_X+\beta u_{XXX}&=0 &&\text{(Gardner)}.
+\end{align}
+These equations are not interchangeable labels. Each follows from a balance among slow growth, nonlinearity, diffusion, and dispersion. An mKdV reduction requires the quadratic nonlinear coefficient to vanish or become asymptotically small. This condition must be checked for the chosen IDM working point rather than assumed.
+
+Observable nonlinear phenomena include amplitude-dependent wave speed, waveform steepening, saturation into a finite stop-and-go wave, coexistence of free and congested states, hysteresis under parameter sweeps, and merging or interaction of waves. The online experiments visualize each phenomenon using fixed color limits, probe trajectories, and amplitude metrics.
+
+\chapterend{Linear theory locates infinitesimal onset; weakly nonlinear theory explains the nearby finite-amplitude waveform. Far from threshold, direct nonlinear simulation and continuation are required.}
+
+\part{Macroscopic Traffic Flow}
+
+\chapter{LWR, Payne--Whitham, and ARZ Models}
+\chapterguide{We derive continuum models from conservation and explain the closures that distinguish first- and second-order traffic theories.}
+
+\section{Vehicle conservation and LWR}
+For density $\rho(x,t)$ and mean speed $v(x,t)$, conservation over a fixed road interval yields
+\begin{equation}
+\rho_t+(\rho v)_x=0.
+\end{equation}
+LWR assumes speed instantly takes its equilibrium value $v=V(\rho)$. With $Q(\rho)=\rho V(\rho)$,
+\begin{equation}
+\rho_t+Q(\rho)_x=0.
+\end{equation}
+For a smooth solution, the chain rule gives $Q(\rho)_x=Q'(\rho)\rho_x$, hence $\rho_t+Q'(\rho)\rho_x=0$. Along a curve satisfying $\dd x/\dd t=Q'(\rho)$, the density is constant until characteristics intersect and a shock forms.
+
+\section{Payne--Whitham}
+To give speed independent inertia, use its material derivative
+\begin{equation}
+\frac{Dv}{Dt}=v_t+vv_x.
+\end{equation}
+The PW closure combines relaxation, anticipation pressure, and viscosity:
+\begin{align}
+\rho_t+(\rho v)_x&=0,\\
+v_t+vv_x&=\frac{V(\rho)-v}{\tau}
+-\frac{P'(\rho)}{\rho}\rho_x+\nu v_{xx}.
+\end{align}
+The form is inspired by continuum momentum balances, including Navier--Stokes-like inertia, pressure, and viscosity, but its coefficients represent driver response and traffic anticipation rather than molecular mechanics.
+
+\section{Aw--Rascle--Zhang}
+ARZ introduces the generalized velocity
+\begin{equation}
+w=v+p(\rho),\qquad p'(\rho)>0,
+\end{equation}
+and transports it with vehicles while relaxing speed toward the fundamental diagram:
+\begin{align}
+\rho_t+(\rho v)_x&=0,\\
+w_t+vw_x&=\frac{V(\rho)-v}{\tau}.
+\end{align}
+The chain rule explicitly gives
+\begin{align}
+w_t&=v_t+p'(\rho)\rho_t,\\
+w_x&=v_x+p'(\rho)\rho_x,\\
+w_t+vw_x&=v_t+vv_x+p'(\rho)(\rho_t+v\rho_x).
+\end{align}
+Using continuity in expanded form, $\rho_t+v\rho_x=-\rho v_x$, produces the speed equation
+\begin{equation}
+v_t+\bigl[v-\rho p'(\rho)\bigr]v_x=\frac{V(\rho)-v}{\tau}.
+\end{equation}
+ARZ avoids the symmetric pressure response of PW and respects the anisotropic principle that traffic information should not propagate faster downstream than vehicles.
+
+\chapterend{LWR closes speed instantaneously. PW evolves speed through a momentum-like balance. ARZ transports a generalized velocity and provides a more traffic-consistent anisotropic characteristic structure.}
+
+\chapter{Macroscopic Linear Stability}
+\chapterguide{We linearize LWR, PW, and ARZ and connect modal growth to numerical space--time plots.}
+
+For LWR set $\rho=\rho_0+r$. Taylor expansion gives
+\begin{equation}
+Q(\rho_0+r)=Q(\rho_0)+Q'(\rho_0)r+O(r^2).
+\end{equation}
+Since the uniform terms are constant, retaining first order yields
+\begin{equation}
+r_t+c_*r_x=0,\qquad c_*=Q'(\rho_0)=V_0+\rho_0V'_0.
+\end{equation}
+With $r=\hat r e^{\lambda t+ikx}$,
+\begin{equation}
+\lambda=-ikc_*,\qquad\Rea\lambda=0.
+\end{equation}
+Thus smooth LWR perturbations are neutrally transported rather than asymptotically damped. Nonlinear steepening and entropy shocks are separate phenomena.
+
+For a second-order model set $\rho=\rho_0+r$ and $v=V_0+u$, retain first-order terms, and insert $(r,u)=(\hat r,\hat u)e^{\lambda t+ikx}$. The resulting $2\times2$ determinant gives a dispersion relation with two branches. One is associated with the conserved density mode, the other with velocity relaxation. Stability requires the real parts of both branches to be nonpositive over all admissible $k$.
+
+PW may violate anisotropy because one characteristic can exceed vehicle speed. ARZ is usually preferred for traffic interpretation because its characteristic family is vehicle-consistent. PW remains useful pedagogically: its pressure, relaxation, and viscosity expose the physical balance and permit a transparent comparison with microscopic long-wave diffusion.
+
+\section{Finite-volume update}
+For LWR on cells $j$ of width $\Delta x$, a Godunov update is
+\begin{equation}
+\rho_j^{m+1}=\rho_j^m-\frac{\Delta t}{\Delta x}
+\left(\hat Q_{j+1/2}^m-\hat Q_{j-1/2}^m\right).
+\end{equation}
+The numerical flux is obtained from the local Riemann problem. For ARZ, update conservative variables with a consistent Riemann flux and integrate relaxation by operator splitting or an IMEX method. A CFL restriction based on the largest characteristic speed is mandatory.
+
+\chapterend{Macroscopic stability follows from the dispersion relation of the linearized PDE. LWR has neutral advection; second-order models add a relaxation branch and a stability-sensitive dynamic closure.}
+
+\chapter{Micro--Macro Consistency with IDM}
+\chapterguide{We align equilibrium and long-wave dynamics so that microscopic and continuum simulations can be compared under the same conditions.}
+
+The first consistency layer is equilibrium. Convert the IDM equilibrium relation to $V(\rho)$ using
+\begin{equation}
+s=\frac{1}{\rho}-\ell
+\end{equation}
+in consistent units. This IDM-derived curve replaces an unrelated Greenshields curve; otherwise different equilibria are being compared.
+
+The second layer is coordinate transformation. Vehicle number is a Lagrangian label and road position is an Eulerian coordinate. If $x=x(n,t)$, then
+\begin{equation}
+x_n=-\frac{1}{\rho},\qquad x_t=v.
+\end{equation}
+For a vehicle-attached field $a(n,t)=A(x(n,t),t)$,
+\begin{align}
+\left.\frac{\partial a}{\partial t}\right|_n&=A_t+vA_x,\\
+\left.\frac{\partial a}{\partial n}\right|_t&=-\frac{1}{\rho}A_x.
+\end{align}
+These chain rules map following-vehicle differences into road gradients. A long-wave expansion of the discrete IDM then supplies effective anticipation, relaxation, and diffusion coefficients for a continuum closure.
+
+The third layer is dynamic calibration. Match equilibrium slope, long-wave propagation speed, and $k^2$ growth coefficient. Equal fundamental diagrams alone do not imply equal stability. When both models are run from the same physical perturbation, compare speed fields on the same $(x,t)$ grid, fitted growth rate, wave speed, and image similarity.
+
+\chapterend{Micro--macro agreement requires the same equilibrium curve and matched long-wave dynamics. Coordinate transformation explains how vehicle-index differences become road-space gradients.}
+
+\part{Data, Applications, and Learning}
+
+\chapter{Stability Evidence from NGSIM Trajectories}
+\chapterguide{A real-data analysis must connect trajectory reconstruction, derivative estimation, model calibration, validation, and control evaluation.}
+
+The NGSIM trajectory data contain positions, speeds, accelerations, vehicle dimensions, lanes, and leader--follower identifiers. A reproducible workflow is:
+\begin{enumerate}
+\item select continuous lane-following segments and reconstruct leader chains;
+\item remove lane changes, impossible gaps, duplicate frames, and boundary fragments;
+\item smooth positions with a documented method, then differentiate consistently;
+\item estimate equilibrium and dynamic parameters on training segments;
+\item include a stability-spectrum or transfer-gain loss in addition to pointwise acceleration error;
+\item validate on held-out platoons using trajectories, growth rates, and wave speeds;
+\item optimize a stability-related controller in the calibrated model and report uncertainty across bootstrap samples.
+\end{enumerate}
+
+A model can minimize one-step error while producing the wrong derivative signs and the wrong traffic-level stability. Stability-aware calibration therefore complements, rather than replaces, trajectory fit. Safety and energy benefits should be evaluated in simulation after calibration; they are not implied by a linear margin alone.
+
+\chapterend{Real-data stability analysis is a chain of evidence. Filtering, chain reconstruction, derivative uncertainty, calibration objective, and out-of-sample traffic-level validation all affect the conclusion.}
+
+\chapter{Application A: Disturbance Rejection in an Open Platoon}
+\chapterguide{A finite sinusoidal input illustrates how cooperative AV feedback changes safety, efficiency, and energy consequences.}
+
+Initialize an open platoon in a uniform but string-unstable state. The lead vehicle applies a sinusoidal speed disturbance for several periods and then returns to equilibrium. Compare an HDV baseline with connected AVs using multi-predecessor acceleration feedback. Use separate position--time diagrams colored by speed, plus a selected probe's speed and gap histories.
+
+The analytical prediction is the frequency response at the imposed $\omega$. The numerical measurements are peak amplification by vehicle number, recovery time after forcing stops, minimum gap, delay, and EV energy. A longitudinal EV model can combine rolling resistance, aerodynamic drag, grade, inertial power, drivetrain efficiency, and regenerative-braking efficiency. It should be reported with all coefficients and never used as a substitute for speed-trajectory evidence.
+
+\chapterend{Cooperative feedback is valuable when it reduces both forced amplification and post-forcing recovery time. Stability is the mechanism; safety, delay, comfort, and energy are simulated consequences.}
+
+\chapter{Event-Triggered Variable Speed Limits}
+\chapterguide{This corrected experiment uses continuous inflow, a fixed one-kilometer upstream control zone, a 120 km/h statutory limit, and no anticipatory control before the slow vehicle appears.}
+
+Consider a single-lane road with continuous arrivals over $0$--$1200$ s. A slow vehicle appears at a fixed incident location at
+\begin{equation}
+t_{\mathrm{incident}}=300\ \mathrm{s}.
+\end{equation}
+The VSL zone is fixed in road coordinates over the one-kilometer segment immediately upstream of that location. It is not attached to the slow vehicle. Before $300$ s, the statutory limit is $120$ km/h and the VSL controller is off. At the incident time it is activated and ramped over 30 s; it remains active until $900$ s. This timing prevents the invalid comparison in which controlled traffic is preconditioned before the disturbance exists.
+
+\section{Why a lower speed limit can stabilize flow}
+At each candidate speed limit, map the commanded desired speed to an equilibrium density and evaluate the analytical stability margin. Select the highest feasible limit whose margin satisfies a specified nonnegative buffer and operational constraints. Maximizing margin alone would tend to over-restrict speed; choosing the highest limit subject to stability avoids unnecessary delay while crossing the stability boundary. Safety, queue length, and energy are evaluated afterward in simulation and are not used as unobservable online optimization variables.
+
+Reducing desired speed upstream can lower the inflow to the bottleneck, reduce speed differences at the queue tail, and move the local operating point from an unstable branch into a stable region. A useful design must produce an upstream-moving congestion front in the uncontrolled case and demonstrate that event-triggered VSL weakens that front rather than simply moving traffic more slowly everywhere.
+
+\section{Corrected results}
+The corrected simulation uses identical arrivals and slow-vehicle timing in both runs. Table~\ref{tab:vsl} reports the principal measurements.
+\begin{table}[htbp]
+\centering
+\caption{Corrected event-triggered VSL results.}
+\label{tab:vsl}
+\begin{tabular}{lrrr}
+\toprule
+Metric & No VSL & Event-triggered VSL & Change\\
+\midrule
+Queue-tail speed (m/s) & $-2.687$ & $-0.284$ & $89.4\%$ weaker\\
+Peak queued vehicles & $121$ & $102$ & $15.7\%$ lower\\
+Peak speed standard deviation (m/s) & $8.912$ & $4.107$ & $53.9\%$ lower\\
+Minimum gap (m) & $1.56$ & $3.27$ & $109.8\%$ higher\\
+Minimum TTC (s) & $2.34$ & $6.70$ & $186\%$ higher\\
+Total delay (veh h) & $6.866$ & $4.799$ & $30.1\%$ lower\\
+EV energy intensity & $17.521$ & $17.328$ & $1.10\%$ lower\\
+\bottomrule
+\end{tabular}
+\end{table}
+The main stability evidence is the reduction in upstream queue-front speed and speed variance. The safety, delay, and energy figures are downstream consequences from the same nonlinear simulation. The bilingual laboratory exposes the event markers so the green control band begins at exactly $t=300$ s.
+
+\chapterend{The VSL becomes active only when the slow-vehicle disturbance begins. Its mechanism is to reshape the upstream operating point and reduce speed mismatch, not to anticipate an event that has not occurred.}
+
+\chapter{Machine Learning and Deep Learning Stability}
+\chapterguide{Prediction accuracy does not certify dynamic stability. This chapter shows how classical derivative and spectral ideas extend to learned models.}
+
+For a differentiable learned acceleration $a_\theta=F_\theta(s,v,\Delta v,z)$, automatic differentiation recovers local Jacobian entries at an equilibrium. Classical local and string criteria can then be evaluated if the state is Markovian and the architecture is vehicle-local.
+
+RNNs, LSTMs, Neural ODEs, and delay embeddings require an augmented state and the spectrum of the full recurrent Jacobian. GNNs and attention models require a graph-level Jacobian or a transfer operator; a scalar predecessor gain is generally insufficient. Reinforcement-learning reward is not a Lyapunov certificate. Closed-loop stability can be promoted through spectral normalization, contraction penalties, Lyapunov inequalities, dissipativity constraints, or robust control layers.
+
+A stability-aware loss can combine trajectory error with penalties on positive spectral abscissa, transfer gain above one, and equilibrium inconsistency:
+\begin{equation}
+\mathcal L=\mathcal L_{\mathrm{data}}+lambda_e\mathcal L_{\mathrm{eq}}
++\lambda_s\bigl[\max(0,\alpha(J))\bigr]^2
++\lambda_g\int\bigl[\max(0,|G(i\omega)|-1)\bigr]^2\dd\omega.
+\end{equation}
+Claims must remain architecture-specific: sampled Jacobian checks are diagnostics, not global certificates.
+
+\chapterend{Learned traffic models need dynamical validation in addition to predictive validation. The correct stability object is determined by the architecture's full state and interaction graph.}
+
+\chapter{Reproducibility and the Online Laboratory}
+\chapterguide{The book, numerical cases, source code, metrics, and browser laboratory form one reproducible package.}
+
+Each published experiment should contain a machine-readable parameter file, source commit, random seed, initial and boundary conditions, integrator and step size, raw or derived data, plots, and reference metrics. The browser laboratory supports Chinese and English through the language switch in the upper-right corner. It includes live intervention: parameters or feedback can be changed without resetting the simulated state, allowing a stop-and-go wave to be observed before and after stabilization.
+
+The public code includes baseline IDM, local-response examples, ring-road RK4, macroscopic finite-volume updates, application-case generation, and metric checks. Browser animation is for exploration; batch scripts are the reproducible authority for numerical values used in the book.
+
+\chapterend{Reproducibility requires one source of truth for equations, parameters, event timing, and metrics. Interactive visualization and batch verification serve complementary roles.}
+
+\appendix
+\part{Appendices}
+
+\chapter{Stability Criteria at a Glance}
+For $\lambda^2+a_1\lambda+a_0=0$ with real coefficients, both roots have negative real parts iff $a_1>0$ and $a_0>0$. For a state matrix $A$, local asymptotic stability requires its spectral abscissa $\alpha(A)=\max_j\Rea\lambda_j(A)$ to be negative. For an open homogeneous chain, frequency-domain string stability requires $\sup_{\omega\ge0}|G(i\omega)|\le1$. A periodic ring instead evaluates only discrete spatial modes $k_j=2\pi j/N$.
+
+For a complex quadratic, real-coefficient Routh--Hurwitz cannot be applied directly. A Bilharz determinant or an equivalent real $4\times4$ representation must be used. Multiplying the polynomial by a nonzero complex factor does not change its roots, but sign arguments may only discard a factor after proving that the discarded real factor is strictly positive.
+
+\chapter{Pseudocode for the Core Solvers}
+\section*{Microscopic RK4 on a ring}
+\begin{verbatim}
+for each output step:
+    k1 = rhs(state)
+    k2 = rhs(state + dt*k1/2)
+    k3 = rhs(state + dt*k2/2)
+    k4 = rhs(state + dt*k3)
+    state += dt*(k1 + 2*k2 + 2*k3 + k4)/6
+    wrap display positions; retain unwrapped trajectory positions
+    store speed, gap, acceleration, and selected probe variables
+repeat with dt/2 and compare growth rate, wave speed, and minimum gap
+\end{verbatim}
+
+\section*{LWR finite volume}
+\begin{verbatim}
+initialize cell densities and boundary demand/supply
+for each time step satisfying CFL:
+    compute interface Godunov fluxes from neighboring states
+    rho[j] -= dt/dx * (flux[j+1/2] - flux[j-1/2])
+    apply boundary conditions
+    store density, flow, and speed fields
+\end{verbatim}
+
+\chapter{Selected References}
+\begin{thebibliography}{99}
+\bibitem{chandler1958} R. E. Chandler, R. Herman, and E. W. Montroll, ``Traffic dynamics: studies in car following,'' \emph{Operations Research}, 1958.
+\bibitem{gazis1961} D. C. Gazis, R. Herman, and R. W. Rothery, ``Nonlinear follow-the-leader models of traffic flow,'' \emph{Operations Research}, 1961.
+\bibitem{bando1995} M. Bando et al., ``Dynamical model of traffic congestion and numerical simulation,'' \emph{Physical Review E}, 1995.
+\bibitem{treiber2000} M. Treiber, A. Hennecke, and D. Helbing, ``Congested traffic states in empirical observations and microscopic simulations,'' \emph{Physical Review E}, 2000.
+\bibitem{treiber2013} M. Treiber and A. Kesting, \emph{Traffic Flow Dynamics}. Springer, 2013.
+\bibitem{wilson2011} R. E. Wilson and J. A. Ward, ``Car-following models: fifty years of linear stability analysis,'' \emph{Transportation Planning and Technology}, 2011.
+\bibitem{swaroop1996} D. Swaroop and J. K. Hedrick, ``String stability of interconnected systems,'' \emph{IEEE Transactions on Automatic Control}, 1996.
+\bibitem{sugiyama2008} Y. Sugiyama et al., ``Traffic jams without bottlenecks---experimental evidence for the physical mechanism of the formation of a jam,'' \emph{New Journal of Physics}, 2008.
+\bibitem{lwr1955} M. J. Lighthill and G. B. Whitham, ``On kinematic waves II: a theory of traffic flow on long crowded roads,'' \emph{Proceedings of the Royal Society A}, 1955.
+\bibitem{richards1956} P. I. Richards, ``Shock waves on the highway,'' \emph{Operations Research}, 1956.
+\bibitem{payne1971} H. J. Payne, ``Models of freeway traffic and control,'' in \emph{Mathematical Models of Public Systems}, 1971.
+\bibitem{aw2000} A. Aw and M. Rascle, ``Resurrection of second order models of traffic flow,'' \emph{SIAM Journal on Applied Mathematics}, 2000.
+\bibitem{zhang2002} H. M. Zhang, ``A non-equilibrium traffic model devoid of gas-like behavior,'' \emph{Transportation Research Part B}, 2002.
+\bibitem{daganzo1995} C. F. Daganzo, ``Requiem for second-order fluid approximations of traffic flow,'' \emph{Transportation Research Part B}, 1995.
+\bibitem{leveque2002} R. J. LeVeque, \emph{Finite Volume Methods for Hyperbolic Problems}. Cambridge University Press, 2002.
+\bibitem{ngsim} U.S. Federal Highway Administration, \emph{Next Generation Simulation (NGSIM) Vehicle Trajectories and Supporting Data}, 2016.
+\bibitem{hegyi2005} A. Hegyi, B. De Schutter, and H. Hellendoorn, ``Model predictive control for optimal coordination of ramp metering and variable speed limits,'' \emph{Transportation Research Part C}, 2005.
+\bibitem{stern2018} R. E. Stern et al., ``Dissipation of stop-and-go waves via control of autonomous vehicles,'' \emph{Transportation Research Part C}, 2018.
+\bibitem{chen2018} R. T. Q. Chen et al., ``Neural ordinary differential equations,'' \emph{NeurIPS}, 2018.
+\bibitem{miyato2018} T. Miyato et al., ``Spectral normalization for generative adversarial networks,'' \emph{ICLR}, 2018.
+\end{thebibliography}
+
+\backmatter
+\chapter*{Closing Perspective}
+Stability analysis is most useful when it links four objects without ambiguity: a model, an equilibrium, a perturbation, and an observable response. Linear criteria locate infinitesimal growth; nonlinear analysis explains finite waves; data test whether the relevant derivatives and modes exist in traffic; control changes the operating point or the propagation mechanism. The online laboratory makes these links visible, while the batch code makes them reproducible.
+
+\end{document}

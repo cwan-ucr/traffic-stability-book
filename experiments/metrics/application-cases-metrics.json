@@ -60,7 +60,7 @@
         420.0
       ],
       "vsl": [
-        180.0,
+        300.0,
         900.0
       ],
       "zone_start_m": 5000.0,
@@ -178,26 +178,26 @@
       "arrival_vehicles": 1087,
       "departure_vehicles": 1072,
       "peak_vehicles_on_road": 537,
-      "peak_queue_vehicles": 100,
+      "peak_queue_vehicles": 102,
       "queue_speed_threshold": 18.2,
-      "queue_tail_wave_speed_mps": -0.35149234949977215,
-      "peak_speed_std": 3.1515339052537588,
+      "queue_tail_wave_speed_mps": -0.28394491641935576,
+      "peak_speed_std": 4.10693124715167,
       "recovery_time": null,
-      "min_speed": 6.580425157334569,
-      "min_gap": 3.1449482391672063,
-      "min_ttc": 11.800933169797492,
-      "delay_vehicle_hours": 4.587617896077516,
+      "min_speed": 2.203854540081206,
+      "min_gap": 3.266147844454281,
+      "min_ttc": 6.697488723790102,
+      "delay_vehicle_hours": 4.7992651443506515,
       "harsh_braking_vehicle_seconds": 0.0,
-      "total_ev_energy_kwh": 2233.7474392912977,
-      "ev_energy_intensity_kwh_per_100km": 17.30419188918151,
-      "mean_speed": 20.334886538236212
+      "total_ev_energy_kwh": 2235.0565029985587,
+      "ev_energy_intensity_kwh_per_100km": 17.3278769005091,
+      "mean_speed": 20.31886989399887
     },
     "benefit": {
-      "queue_reduction_percent": 17.355371900826448,
-      "peak_std_reduction_percent": 64.63626470161452,
-      "delay_reduction_percent": 33.184046907493475,
+      "queue_reduction_percent": 15.702479338842975,
+      "peak_std_reduction_percent": 53.91563794670788,
+      "delay_reduction_percent": 30.101529371569868,
       "harsh_braking_reduction_percent": null,
-      "ev_energy_intensity_reduction_percent": 1.2390453022778927
+      "ev_energy_intensity_reduction_percent": 1.103866823807507
     }
   }
 }
