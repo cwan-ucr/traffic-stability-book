@@ -2,3 +2,14 @@
 node_modules/
 dist/
 *.log
+.DS_Store
+**/__pycache__/
+**/*.py[cod]
+**/.pytest_cache/
+book/source/build*/
+book/source/*.aux
+book/source/*.fdb_latexmk
+book/source/*.fls
+book/source/*.log
+book/source/*.out
+book/source/*.toc

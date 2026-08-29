@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Traffic stability numerical and data experiment index." />
+    <title>Experiments | Traffic Stability and Control</title>
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <header class="site-header"><a class="brand" href="../">Traffic Stability and Control</a><nav aria-label="Primary navigation"><a href="../book/">Book</a><a href="../lab/">Lab</a><a href="../code/">Code</a></nav></header>
+    <main class="page-main">
+      <section class="page-intro">
+        <p class="eyebrow">Experiment index</p>
+        <h1>Numerical cases and data</h1>
+        <p class="summary">The first public set contains six numerical stability cases and one empirical NGSIM trajectory analysis. The shared machine-readable manifest and reference metrics are available below.</p>
+        <div class="button-row"><a class="button" href="manifest.json">Open manifest JSON</a><a class="button secondary" href="../code/">Reproduction guide</a></div>
+      </section>
+      <ol class="case-list">
+        <li><span class="case-id">M01</span><div><strong>局部欠阻尼恢复</strong><p>Linear second-order follower; analytical solution checked point-by-point against RK4 integration.</p></div></li>
+        <li><span class="case-id">M02</span><div><strong>有限环道与离散波长</strong><p>Linearized IDM ring experiment showing finite-domain wavelength effects.</p></div></li>
+        <li><span class="case-id">M03</span><div><strong>原始 IDM 稳定与失稳</strong><p>Nonlinear IDM ring integration under stable and unstable equilibrium speeds.</p></div></li>
+        <li><span class="case-id">M04</span><div><strong>前车加速度反馈</strong><p>Gradually activates cyclic acceleration feed-forward during a running simulation.</p></div></li>
+        <li><span class="case-id">M05</span><div><strong>时间步长收敛检查</strong><p>Growth-rate convergence study using three time steps.</p></div></li>
+        <li><span class="case-id">M06</span><div><strong>IDM 基本图下的 LWR 激波</strong><p>LWR finite-volume experiment with IDM equilibrium flow.</p></div></li>
+        <li><span class="case-id">D01</span><div><strong>NGSIM US-101 自然扰动传播</strong><p>Empirical trajectory analysis of a three-minute natural disturbance segment.</p></div></li>
+      </ol>
+      <p class="notice">原始 NGSIM 数据不在此仓库重新发布。代码目录提供精确的下载、字段、单位换算与筛选说明，以及可公开复查的小型派生数据与参考指标。</p>
+    </main>
+    <footer><p>Changxin Wan · 2026</p><a href="../">Research library</a></footer>
+  </body>
+</html>

@@ -1,0 +1,63 @@
+{
+  "protocol": {
+    "idm": {
+      "v0": 33.3,
+      "T": 1.5,
+      "s0": 2.0,
+      "a": 1.0,
+      "b": 1.5,
+      "delta": 4.0,
+      "vehicle_length": 5.0
+    },
+    "N": 120,
+    "mode": 1,
+    "initial_speed_amplitude_mps": 0.05,
+    "duration_s": 1800.0,
+    "micro_dt_s": 0.05,
+    "sample_dt_s": 2.0
+  },
+  "stable": {
+    "equilibrium_speed_mps": 25.0,
+    "gap_m": 47.81910771944346,
+    "headway_m": 52.81910771944346,
+    "density_veh_per_km": 18.932542467616997,
+    "flow_veh_per_h": 1703.9288220855296,
+    "phi": 0.012925737889603009,
+    "tau_s": 9.741826430138016,
+    "c0_mps": 17.700041044171627,
+    "arz_rho_p_rho_mps": 21.335229386103695,
+    "arz_p_rho": 1126.9077791636466,
+    "effective_diffusion_m2ps": 951.4334381102356,
+    "ring_length_m": 6338.292926333215,
+    "wavelength_m": 6338.292926333215,
+    "micro_growth_rate_per_s": -0.0009354825570643038,
+    "macro_growth_rate_per_s": -0.0009377252818887159,
+    "growth_relative_error": 0.002397398869146283,
+    "micro_phase_speed_mps": 10.293307798340116,
+    "macro_phase_speed_mps": 10.241017668759703,
+    "phase_speed_relative_error": 0.005080012237547726,
+    "normalized_spacetime_similarity": 0.9977148151781441
+  },
+  "unstable": {
+    "equilibrium_speed_mps": 8.0,
+    "gap_m": 14.02337586611124,
+    "headway_m": 19.023375866111238,
+    "density_veh_per_km": 52.566905424048706,
+    "flow_veh_per_h": 1513.9268762126026,
+    "phi": -0.01889165247517595,
+    "tau_s": 4.646031693019624,
+    "c0_mps": 11.698533404423014,
+    "arz_rho_p_rho_mps": 10.893432298364413,
+    "arz_p_rho": 207.22985708382225,
+    "effective_diffusion_m2ps": -97.45855616135435,
+    "ring_length_m": 2282.8051039333486,
+    "wavelength_m": 2282.8051039333486,
+    "micro_growth_rate_per_s": 0.0006827173633118185,
+    "macro_growth_rate_per_s": 0.0007125837591039838,
+    "growth_relative_error": 0.04374635449036386,
+    "micro_phase_speed_mps": -4.46941971219158,
+    "macro_phase_speed_mps": -4.516326602084183,
+    "phase_speed_relative_error": 0.010495073838031261,
+    "normalized_spacetime_similarity": 0.9912720255381651
+  }
+}

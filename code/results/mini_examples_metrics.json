@@ -1,0 +1,92 @@
+{
+  "M01": {
+    "equation": "delta_s_ddot + 0.2 delta_s_dot + 0.25 delta_s = 0",
+    "roots": [
+      [
+        -0.1,
+        0.48989794855663565
+      ],
+      [
+        -0.1,
+        -0.48989794855663565
+      ]
+    ],
+    "period_s": 12.825498301618639,
+    "decay_time_s": 10.0,
+    "first_undershoot_m": -0.526609894550943,
+    "rk4_max_abs_error_m": 6.0057207540431534e-09
+  },
+  "M02": {
+    "N12": {
+      "mode": 1,
+      "growth_rate_per_s": -0.021036645923863007,
+      "angular_frequency_rad_per_s": 0.2810649511023835,
+      "wavelength_vehicles": 12.0
+    },
+    "N20": {
+      "mode": 1,
+      "growth_rate_per_s": 0.0013012050279142555,
+      "angular_frequency_rad_per_s": 0.18334163012819638,
+      "wavelength_vehicles": 20.0
+    },
+    "N30": {
+      "mode": 1,
+      "growth_rate_per_s": 0.0040856555437486855,
+      "angular_frequency_rad_per_s": 0.12821996665628985,
+      "wavelength_vehicles": 30.0
+    }
+  },
+  "M03": {
+    "stable": {
+      "speed_mps": 25.0,
+      "theoretical_growth_per_s": -0.014858422976313557,
+      "fitted_growth_per_s": -0.014720335989700723,
+      "amplitude_ratio": 8.915523424658591e-05
+    },
+    "unstable": {
+      "speed_mps": 8.0,
+      "theoretical_growth_per_s": 0.0040856555437486855,
+      "fitted_growth_per_s": 0.004085505898370942,
+      "amplitude_ratio": 5.260717329633792
+    }
+  },
+  "M04": {
+    "activation_time_s": 300.0,
+    "ramp_duration_s": 60.0,
+    "final_gain": 0.25,
+    "uncontrolled_growth_per_s": 0.0040856555437486855,
+    "controlled_growth_per_s": -0.011558040498878031,
+    "mean_sigma_before_mps": 0.19318731413493265,
+    "mean_sigma_after_mps": 0.000808488587661786,
+    "peak_sigma_mps": 0.23004053649200376
+  },
+  "M05": {
+    "theoretical_growth_per_s": 0.0040856555437486855,
+    "runs": [
+      {
+        "dt_s": 0.4,
+        "fitted_growth_per_s": 0.0040856540002178286,
+        "relative_error_percent": 3.7779270435807095e-05
+      },
+      {
+        "dt_s": 0.2,
+        "fitted_growth_per_s": 0.004085655403439732,
+        "relative_error_percent": 3.4341846048754832e-06
+      },
+      {
+        "dt_s": 0.1,
+        "fitted_growth_per_s": 0.004085655481164143,
+        "relative_error_percent": 1.5318115272547776e-06
+      }
+    ]
+  },
+  "M06": {
+    "left_density_veh_per_km": 20.0,
+    "right_density_veh_per_km": 60.0,
+    "exact_shock_speed_mps": -2.4253627651252625,
+    "measured_shock_speed_mps": -2.2916666666666665,
+    "absolute_speed_error_mps": 0.13369609845859598,
+    "dx_m": 25.0,
+    "dt_s": 0.5
+  }
+}

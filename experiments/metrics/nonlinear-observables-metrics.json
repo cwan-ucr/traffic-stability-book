@@ -1,0 +1,117 @@
+{
+  "steepening": {
+    "profile_times": [
+      0.0,
+      450.0,
+      900.0,
+      1350.0,
+      1800.0
+    ],
+    "harmonic_ratio": [
+      2.6029280290205412e-14,
+      0.0034128896669824967,
+      0.021339441462295737,
+      0.1091230179154693,
+      0.19026511748657737
+    ],
+    "definition": "sqrt(sum_{m>=8}|V_m|^2)/|V_4|"
+  },
+  "saturation": {
+    "initial_std": 0.014142135623731029,
+    "std_900s": 0.2522811105732373,
+    "std_1800s": 2.962197141957796,
+    "late_mean_300s": 2.5540362491806534
+  },
+  "pulse_scan": [
+    {
+      "amplitude": 0.5,
+      "peak_std": 0.04545296714431549,
+      "late_1800s": 0.0008803724481075721,
+      "recovery_time": 4.0,
+      "late_5400s": 0.00025756861900057065,
+      "censored": false
+    },
+    {
+      "amplitude": 1.0,
+      "peak_std": 0.09090593428863097,
+      "late_1800s": 0.0019658245505575654,
+      "recovery_time": 26.0,
+      "late_5400s": 0.0005755130103888143,
+      "censored": false
+    },
+    {
+      "amplitude": 2.0,
+      "peak_std": 0.18181186857726195,
+      "late_1800s": 0.004995610606804292,
+      "recovery_time": 164.0,
+      "late_5400s": 0.0014650847320475757,
+      "censored": false
+    },
+    {
+      "amplitude": 4.0,
+      "peak_std": 0.3636237371545238,
+      "late_1800s": 0.017766319758684545,
+      "recovery_time": 1374.0,
+      "late_5400s": 0.005244680669395325,
+      "censored": false
+    },
+    {
+      "amplitude": 6.0,
+      "peak_std": 0.5454356057317854,
+      "late_1800s": 0.05573653062416106,
+      "recovery_time": 4700.0,
+      "late_5400s": 0.016674809272163995,
+      "censored": false
+    },
+    {
+      "amplitude": 8.0,
+      "peak_std": 0.7761776699684653,
+      "late_1800s": 0.17704535896086845,
+      "recovery_time": 5400.0,
+      "late_5400s": 0.05268220813971271,
+      "censored": true
+    },
+    {
+      "amplitude": 10.0,
+      "peak_std": 1.1264900146723538,
+      "late_1800s": 0.46117896851084483,
+      "recovery_time": 5400.0,
+      "late_5400s": 0.10943465125372133,
+      "censored": true
+    },
+    {
+      "amplitude": 12.0,
+      "peak_std": 1.648254038279458,
+      "late_1800s": 0.6667027734267105,
+      "recovery_time": 5400.0,
+      "late_5400s": 0.1176767537903657,
+      "censored": true
+    },
+    {
+      "amplitude": 14.0,
+      "peak_std": 2.2386832059276265,
+      "late_1800s": 0.6406220874728947,
+      "recovery_time": 5400.0,
+      "late_5400s": 0.1101229890666058,
+      "censored": true
+    },
+    {
+      "amplitude": 16.0,
+      "peak_std": 2.9564231747023926,
+      "late_1800s": 0.7746631881835772,
+      "recovery_time": 5400.0,
+      "late_5400s": 0.1447956161266479,
+      "censored": true
+    },
+    {
+      "amplitude": 18.0,
+      "peak_std": 3.9211493796615664,
+      "late_1800s": 1.3514500111037417,
+      "recovery_time": 5400.0,
+      "late_5400s": 0.16710854355189939,
+      "censored": true
+    }
+  ],
+  "recovery_definition": "first t with sigma_v < 0.02 m/s continuously for 300 s",
+  "hysteresis_conclusion": "not established by this one-way amplitude scan; a reverse initial-state scan is required"
+}

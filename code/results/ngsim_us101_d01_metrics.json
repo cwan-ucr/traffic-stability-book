@@ -1,0 +1,43 @@
+{
+  "source": "https://doi.org/10.21949/1504477",
+  "location": "US-101 southbound, lane 2",
+  "window_s": 179.5,
+  "rows": 39187,
+  "vehicles": 119,
+  "median_speed_mps": 13.697712,
+  "median_time_headway_s": 1.77,
+  "time_headway_iqr_s": [
+    1.44,
+    2.18
+  ],
+  "selected_platoon_vehicle_ids_leader_to_follower": [
+    395,
+    399,
+    405,
+    411,
+    418,
+    426,
+    431,
+    440
+  ],
+  "selected_platoon_duration_s": 20.0,
+  "valid_pair_episodes": 78,
+  "median_pair_gain": 1.0330258974951958,
+  "pair_gain_iqr": [
+    0.8915010746568226,
+    1.1894065021082494
+  ],
+  "median_pair_gain_bootstrap_95pct_ci": [
+    0.9543741921060275,
+    1.0769745861291116
+  ],
+  "fraction_pair_gain_above_one": 0.5512820512820513,
+  "fraction_pair_gain_above_one_bootstrap_95pct_ci": [
+    0.44871794871794873,
+    0.6538461538461539
+  ],
+  "median_response_lag_s": 1.85,
+  "median_maximum_correlation": 0.7938128875739989,
+  "method_note": "21-frame Savitzky-Golay smoothing, linear detrending, episodes >=20 s, leader std >=0.25 m/s",
+  "interpretation_limit": "Natural episodes are observational and do not by themselves prove model-level string stability or causality."
+}

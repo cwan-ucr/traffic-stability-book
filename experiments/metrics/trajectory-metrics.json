@@ -1,0 +1,292 @@
+{
+  "protocol": {
+    "N": 120,
+    "DT": 0.02,
+    "T_END": 1800,
+    "SAMPLE_DT": 1,
+    "PROBE": 30,
+    "PULSE_CAR": 0,
+    "PULSE_DV": -0.5
+  },
+  "scenarios": {
+    "s0_baseline": {
+      "title": "S0 Original IDM: stable versus unstable operating points",
+      "a": {
+        "label": "stable: original IDM, vₑ=25 m/s",
+        "sigma0": 0.04545296714431553,
+        "sigmaT": 0.00015257182414576568,
+        "sigmaMax": 0.04545296714431553,
+        "sigmaRatio": 0.0033566966851986194,
+        "lateGrowthRate": -0.000665546121912265,
+        "probeVMin": 24.99914069783107,
+        "probeVMax": 25.000633830228217,
+        "probeSMin": 54.890475573862204,
+        "probeSMax": 54.89956788271229,
+        "ringLength": 7187.484136065991
+      },
+      "b": {
+        "label": "unstable: original IDM, vₑ=8 m/s",
+        "sigma0": 0.04545296714431553,
+        "sigmaT": 2.204046004294138,
+        "sigmaMax": 2.204046004294138,
+        "sigmaRatio": 48.49069582841924,
+        "lateGrowthRate": 0.003115409841028972,
+        "probeVMin": 5.237324828324483,
+        "probeVMax": 11.27695422536463,
+        "probeSMin": 9.731718635151992,
+        "probeSMax": 19.665260217692776,
+        "ringLength": 2284.263881701665
+      }
+    },
+    "s1_front_acc": {
+      "title": "S1 Front-vehicle acceleration feedforward",
+      "a": {
+        "label": "baseline: original IDM, κ=p=0, vₑ=8 m/s",
+        "sigma0": 0.04545296714431553,
+        "sigmaT": 2.204046004294138,
+        "sigmaMax": 2.204046004294138,
+        "sigmaRatio": 48.49069582841924,
+        "lateGrowthRate": 0.003115409841028972,
+        "probeVMin": 5.237324828324483,
+        "probeVMax": 11.27695422536463,
+        "probeSMin": 9.731718635151992,
+        "probeSMax": 19.665260217692776,
+        "ringLength": 2284.263881701665
+      },
+      "b": {
+        "label": "with feedforward: κ=0.15, vₑ=8 m/s",
+        "sigma0": 0.04545296714431553,
+        "sigmaT": 0.000867174110217422,
+        "sigmaMax": 0.04545296714431553,
+        "sigmaRatio": 0.01907849288395407,
+        "lateGrowthRate": -0.0003888969855765747,
+        "probeVMin": 7.993860294477609,
+        "probeVMax": 8.00877568653256,
+        "probeSMin": 14.02593920040681,
+        "probeSMax": 14.049434495225569,
+        "ringLength": 2284.263881701665
+      }
+    },
+    "s2_bilateral_acc": {
+      "title": "S2 Bidirectional acceleration coupling",
+      "a": {
+        "label": "baseline: original IDM, κ=p=0, vₑ=8 m/s",
+        "sigma0": 0.04545296714431553,
+        "sigmaT": 2.204046004294138,
+        "sigmaMax": 2.204046004294138,
+        "sigmaRatio": 48.49069582841924,
+        "lateGrowthRate": 0.003115409841028972,
+        "probeVMin": 5.237324828324483,
+        "probeVMax": 11.27695422536463,
+        "probeSMin": 9.731718635151992,
+        "probeSMax": 19.665260217692776,
+        "ringLength": 2284.263881701665
+      },
+      "b": {
+        "label": "bidirectional: fₐ=0.30, fᵦ=0.10, vₑ=8 m/s",
+        "sigma0": 0.04545296714431553,
+        "sigmaT": 0.0000483048059189289,
+        "sigmaMax": 0.04545296714431553,
+        "sigmaRatio": 0.0010627426316429163,
+        "lateGrowthRate": -0.0014810894029567805,
+        "probeVMin": 7.998054831208034,
+        "probeVMax": 8.001688105710821,
+        "probeSMin": 14.032572127305457,
+        "probeSMax": 14.038098769395674,
+        "ringLength": 2284.263881701665
+      }
+    },
+    "s3_multi_front": {
+      "title": "S3 Multi-predecessor acceleration feedback",
+      "a": {
+        "label": "baseline: original IDM, κ=p=0, vₑ=8 m/s",
+        "sigma0": 0.04545296714431553,
+        "sigmaT": 2.204046004294138,
+        "sigmaMax": 2.204046004294138,
+        "sigmaRatio": 48.49069582841924,
+        "lateGrowthRate": 0.003115409841028972,
+        "probeVMin": 5.237324828324483,
+        "probeVMax": 11.27695422536463,
+        "probeSMin": 9.731718635151992,
+        "probeSMax": 19.665260217692776,
+        "ringLength": 2284.263881701665
+      },
+      "b": {
+        "label": "20 predecessors: fₐ=0.027, α=0.8, vₑ=8 m/s",
+        "sigma0": 0.04545296714431553,
+        "sigmaT": 0.0017144684694445813,
+        "sigmaMax": 0.04545296714431553,
+        "sigmaRatio": 0.03771961605941049,
+        "lateGrowthRate": -0.00030593664071093736,
+        "probeVMin": 7.99180079549332,
+        "probeVMax": 8.014345189233923,
+        "probeSMin": 14.021373432921791,
+        "probeSMax": 14.059225394665646,
+        "ringLength": 2284.263881701665
+      }
+    },
+    "s4_rear_gap": {
+      "title": "S4 Rear-gap and rear-relative-speed feedback",
+      "a": {
+        "label": "baseline: original IDM, κ=p=0, vₑ=8 m/s",
+        "sigma0": 0.04545296714431553,
+        "sigmaT": 2.204046004294138,
+        "sigmaMax": 2.204046004294138,
+        "sigmaRatio": 48.49069582841924,
+        "lateGrowthRate": 0.003115409841028972,
+        "probeVMin": 5.237324828324483,
+        "probeVMax": 11.27695422536463,
+        "probeSMin": 9.731718635151992,
+        "probeSMax": 19.665260217692776,
+        "ringLength": 2284.263881701665
+      },
+      "b": {
+        "label": "rear-looking feedback: p=0.30, vₑ=8 m/s",
+        "sigma0": 0.04545296714431553,
+        "sigmaT": 0.0003830208559807244,
+        "sigmaMax": 0.04545296714431553,
+        "sigmaRatio": 0.008426751432191727,
+        "lateGrowthRate": -0.0005163836046332261,
+        "probeVMin": 7.9960574308017875,
+        "probeVMax": 8.004110310890187,
+        "probeSMin": 14.026874304498506,
+        "probeSMax": 14.044616348052386,
+        "ringLength": 2284.263881701665
+      }
+    },
+    "s5_delay": {
+      "title": "S5 Reaction delay at the same high-speed operating point",
+      "a": {
+        "label": "delay-free IDM: τ₀=0, vₑ=19 m/s",
+        "sigma0": 0.04545296714431553,
+        "sigmaT": 0.0004838114826762114,
+        "sigmaMax": 0.04545296714431553,
+        "sigmaRatio": 0.010644222216342552,
+        "lateGrowthRate": -0.0005936282480262811,
+        "probeVMin": 18.99442368735645,
+        "probeVMax": 19.004897631410785,
+        "probeSMin": 33.282966999647215,
+        "probeSMax": 33.30722998584133,
+        "ringLength": 4595.504912343395
+      },
+      "b": {
+        "label": "delayed IDM: τ₀=1.10 s, vₑ=19 m/s",
+        "sigma0": 0.04545296714431553,
+        "sigmaT": 7.530509793031766,
+        "sigmaMax": 7.8727766924188005,
+        "sigmaRatio": 165.6769682190825,
+        "lateGrowthRate": 0.00007033274849355112,
+        "probeVMin": 0,
+        "probeVMax": 26.013137153315455,
+        "probeSMin": 3.0435995840052783,
+        "probeSMax": 60.2618217730942,
+        "ringLength": 4595.504912343395
+      }
+    },
+    "s6_heterogeneous": {
+      "title": "S6 Fixed vehicle types: same 30% AV composition, different order",
+      "a": {
+        "label": "fixed κ=0.50: one AV cluster, vₑ=9 m/s",
+        "sigma0": 0.04545296714431553,
+        "sigmaT": 0.0010385398878068265,
+        "sigmaMax": 0.04545296714431553,
+        "sigmaRatio": 0.022848670902152736,
+        "lateGrowthRate": -0.00035755030741337047,
+        "probeVMin": 8.994168811138046,
+        "probeVMax": 9.006939609619488,
+        "probeSMin": 15.553879528803236,
+        "probeSMax": 15.574408889930965,
+        "ringLength": 2467.57907408048
+      },
+      "b": {
+        "label": "fixed κ=0.50: AVs evenly spaced, vₑ=9 m/s",
+        "sigma0": 0.04545296714431553,
+        "sigmaT": 0.0009945151213105437,
+        "sigmaMax": 0.04545296714431553,
+        "sigmaRatio": 0.021880092407452888,
+        "lateGrowthRate": -0.000390436299856811,
+        "probeVMin": 8.992752904698222,
+        "probeVMax": 9.009807974771771,
+        "probeSMin": 15.551581669278676,
+        "probeSMax": 15.579169852052928,
+        "ringLength": 2467.57907408048
+      }
+    },
+    "s7_mixed_av": {
+      "title": "S7 Mixed AV/HDV traffic: 30% AV, different platoon structure",
+      "a": {
+        "label": "30% AV dispersed: κ₀=0.15, vₑ=9 m/s",
+        "sigma0": 0.04545296714431553,
+        "sigmaT": 0.07598811638038264,
+        "sigmaMax": 0.07598811638038264,
+        "sigmaRatio": 1.6717966098696357,
+        "lateGrowthRate": 0.0016107332660025846,
+        "probeVMin": 8.899673760804786,
+        "probeVMax": 9.09214931095149,
+        "probeSMin": 15.401184038631982,
+        "probeSMax": 15.713080113557226,
+        "ringLength": 2467.57907408048
+      },
+      "b": {
+        "label": "30% AV in 4 platoons: κ=0.50/κ₀=0.15, vₑ=9 m/s",
+        "sigma0": 0.04545296714431553,
+        "sigmaT": 0.001241549887465898,
+        "sigmaMax": 0.04545296714431553,
+        "sigmaRatio": 0.027315045979812776,
+        "lateGrowthRate": -0.0003366234440643468,
+        "probeVMin": 8.992254085247573,
+        "probeVMax": 9.010811976837656,
+        "probeSMin": 15.550770387661032,
+        "probeSMax": 15.580845684168253,
+        "ringLength": 2467.57907408048
+      }
+    },
+    "s6_ordering_three": {
+      "title": "S6 Ordering effect: identical AV share, different transient exposure",
+      "runs": [
+        {
+          "label": "HDV-first: 84 HDVs followed by 36 AVs",
+          "probe": 36,
+          "sigma0": 0.04545296714431553,
+          "sigmaT": 0.0011535480447111713,
+          "sigmaMax": 0.04545296714431553,
+          "sigmaRatio": 0.025378938212077474,
+          "lateGrowthRate": -0.0004729691038850628,
+          "probeVMin": 8.97511329053474,
+          "probeVMax": 9.036618170499683,
+          "probeSMin": 15.519910089805762,
+          "probeSMax": 15.624029309750313,
+          "ringLength": 2467.57907408048
+        },
+        {
+          "label": "uniform: AVs evenly distributed along the path",
+          "probe": 36,
+          "sigma0": 0.04545296714431553,
+          "sigmaT": 0.0005571630292747617,
+          "sigmaMax": 0.04545296714431553,
+          "sigmaRatio": 0.012258012276860611,
+          "lateGrowthRate": -0.0003889900283549826,
+          "probeVMin": 8.995834457722903,
+          "probeVMax": 9.005511212188,
+          "probeSMin": 15.556758915490946,
+          "probeSMax": 15.571648479946361,
+          "ringLength": 2467.57907408048
+        },
+        {
+          "label": "AV-first: 36 AVs followed by 84 HDVs",
+          "probe": 36,
+          "sigma0": 0.04545296714431553,
+          "sigmaT": 0.0004912100605227518,
+          "sigmaMax": 0.04545296714431553,
+          "sigmaRatio": 0.010806996580952227,
+          "lateGrowthRate": -0.00036748155217150016,
+          "probeVMin": 8.996818886099796,
+          "probeVMax": 9.003669130323436,
+          "probeSMin": 15.558094161991221,
+          "probeSMax": 15.569112039304855,
+          "ringLength": 2467.57907408048
+        }
+      ]
+    }
+  }
+}

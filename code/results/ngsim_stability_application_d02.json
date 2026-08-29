@@ -1,0 +1,104 @@
+{
+  "dataset": "NGSIM US-101 D01 selected eight-vehicle platoon",
+  "vehicle_ids_leader_to_follower": [
+    395,
+    399,
+    405,
+    411,
+    418,
+    426,
+    431,
+    440
+  ],
+  "training_interval_s": [
+    0.0,
+    12.0
+  ],
+  "validation_interval_s": [
+    12.0,
+    20.0
+  ],
+  "observed_speed_quantiles_mps": [
+    6.185083230653684,
+    10.667766687964914,
+    13.688861630713147
+  ],
+  "single_vehicle_calibration": {
+    "parameters": {
+      "desired_speed_mps": 33.3,
+      "time_headway_s": 0.44577890913055573,
+      "minimum_gap_m": 6.0,
+      "maximum_acceleration_mps2": 2.2573124409866345,
+      "comfortable_deceleration_mps2": 4.5,
+      "acceleration_exponent": 4.0,
+      "vehicle_length_m": 4.8
+    },
+    "objective": 0.9729050739433296,
+    "training": {
+      "speed_rmse_mps": 3.058205313720806,
+      "gap_rmse_m": 5.988769718708799,
+      "amplitude_profile_rmse_mps": 0.8563464053390143,
+      "last_vehicle_gain_observed": 1.3521271276582472,
+      "last_vehicle_gain_simulated": 1.4328585294700649
+    },
+    "validation": {
+      "speed_rmse_mps": 2.782434485655148,
+      "gap_rmse_m": 4.428508803957675,
+      "amplitude_profile_rmse_mps": 0.36941336846821227,
+      "last_vehicle_gain_observed": 0.9494944575787146,
+      "last_vehicle_gain_simulated": 0.8963191995896356
+    }
+  },
+  "stability_aware_platoon_calibration": {
+    "parameters": {
+      "desired_speed_mps": 33.3,
+      "time_headway_s": 0.9474272817736511,
+      "minimum_gap_m": 6.0,
+      "maximum_acceleration_mps2": 1.550010631491824,
+      "comfortable_deceleration_mps2": 0.5,
+      "acceleration_exponent": 4.0,
+      "vehicle_length_m": 4.8
+    },
+    "objective": 2.329409399494734,
+    "training": {
+      "speed_rmse_mps": 1.1043828643583622,
+      "gap_rmse_m": 3.748835999041867,
+      "amplitude_profile_rmse_mps": 0.34751095555785005,
+      "last_vehicle_gain_observed": 1.3521271276582472,
+      "last_vehicle_gain_simulated": 0.9984618193807383
+    },
+    "validation": {
+      "speed_rmse_mps": 0.8447388430802841,
+      "gap_rmse_m": 2.9040081403081426,
+      "amplitude_profile_rmse_mps": 0.37273997249092167,
+      "last_vehicle_gain_observed": 0.9494944575787146,
+      "last_vehicle_gain_simulated": 0.6770560775687798
+    }
+  },
+  "stability_optimization": {
+    "decision": "front-acceleration feedforward gain kappa",
+    "search_interval": [
+      0.0,
+      0.5
+    ],
+    "target_growth_rate_per_s": -0.002,
+    "design_speed_mps": 6.185083230653684,
+    "selected_gain": 0.04,
+    "baseline_growth_rate_per_s": -0.0005544021029092785,
+    "controlled_growth_rate_per_s": -0.002165673591318692,
+    "held_out_validation": {
+      "speed_rmse_mps": 0.8548897828090019,
+      "gap_rmse_m": 2.8866495177104916,
+      "amplitude_profile_rmse_mps": 0.38044147482792445,
+      "last_vehicle_gain_observed": 0.9494944575787146,
+      "last_vehicle_gain_simulated": 0.6557174079825647
+    },
+    "ring_sigma_ratio_baseline": 0.2766786952297554,
+    "ring_sigma_ratio_controlled": 0.10342708536851873
+  },
+  "equilibrium_long_wave_margin": {
+    "single_at_median": -0.25942059006128304,
+    "fleet_at_median": 0.04321284044218471,
+    "fleet_at_fifth_percentile_speed": -0.0020879169965892785
+  }
+}

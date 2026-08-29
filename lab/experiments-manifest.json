@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "book": "跟驰模型与宏观交通流模型的稳定性",
+  "experiments": [
+    {
+      "id": "M01",
+      "title": "局部欠阻尼恢复",
+      "entry_point": "examples/run_mini_examples.py",
+      "model": "linear second-order follower",
+      "reference_metrics": "results/mini_examples_metrics.json#M01"
+    },
+    {
+      "id": "M02",
+      "title": "有限环道与离散波长",
+      "entry_point": "examples/run_mini_examples.py",
+      "model": "linearized IDM ring",
+      "reference_metrics": "results/mini_examples_metrics.json#M02"
+    },
+    {
+      "id": "M03",
+      "title": "原始 IDM 稳定与失稳",
+      "entry_point": "examples/run_mini_examples.py",
+      "model": "nonlinear IDM ring",
+      "reference_metrics": "results/mini_examples_metrics.json#M03"
+    },
+    {
+      "id": "M04",
+      "title": "仿真中途开启前车加速度反馈",
+      "entry_point": "examples/run_mini_examples.py",
+      "model": "nonlinear IDM ring with cyclic acceleration feed-forward",
+      "reference_metrics": "results/mini_examples_metrics.json#M04"
+    },
+    {
+      "id": "M05",
+      "title": "时间步长收敛检查",
+      "entry_point": "examples/run_mini_examples.py",
+      "model": "nonlinear IDM ring",
+      "reference_metrics": "results/mini_examples_metrics.json#M05"
+    },
+    {
+      "id": "M06",
+      "title": "IDM 基本图下的 LWR 激波",
+      "entry_point": "examples/run_mini_examples.py",
+      "model": "LWR finite volume with IDM equilibrium flow",
+      "reference_metrics": "results/mini_examples_metrics.json#M06"
+    },
+    {
+      "id": "D01",
+      "title": "NGSIM US-101 自然扰动传播",
+      "entry_point": "examples/analyze_ngsim_us101.py",
+      "model": "empirical trajectory analysis",
+      "reference_metrics": "results/ngsim_us101_d01_metrics.json"
+    }
+  ]
+}
+

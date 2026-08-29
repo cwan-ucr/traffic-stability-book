@@ -1,0 +1,203 @@
+{
+  "case1": {
+    "setup": {
+      "N": 60,
+      "ve": 8.0,
+      "leader_amplitude": 0.6,
+      "period": 48.0,
+      "cycles": 5
+    },
+    "HDV": {
+      "leader_amplitude": 0.6,
+      "last_vehicle_amplitude": 0.9272934082269884,
+      "amplification": 1.5454890137116473,
+      "peak_speed_std": 0.5488431890206901,
+      "recovery_time": 454.0,
+      "min_gap": 12.585388024070408,
+      "min_ttc": 65.27435123576143,
+      "harsh_braking_vehicle_seconds": 0.0,
+      "mean_speed": 7.999999999603576,
+      "mean_ev_energy_kwh": 0.42353998278747534,
+      "ev_energy_intensity_kwh_per_100km": 4.411874820921863,
+      "mean_excess_ev_energy_wh": 0.7178361618798739,
+      "min_regen_power_kw": -0.06888711999443513
+    },
+    "AV": {
+      "leader_amplitude": 0.6,
+      "last_vehicle_amplitude": 0.09910143105829672,
+      "amplification": 0.16516905176382787,
+      "peak_speed_std": 0.1925664419098126,
+      "recovery_time": 392.0,
+      "min_gap": 13.106040705892756,
+      "min_ttc": 116.22014417317607,
+      "harsh_braking_vehicle_seconds": 0.0,
+      "mean_speed": 7.999999975733532,
+      "mean_ev_energy_kwh": 0.42289797218710196,
+      "ev_energy_intensity_kwh_per_100km": 4.405187223666862,
+      "mean_excess_ev_energy_wh": 0.07582556150658716,
+      "min_regen_power_kw": 0.48464604139153883
+    },
+    "benefit": {
+      "amplitude_reduction_percent": 89.3128291240869,
+      "peak_std_reduction_percent": 64.91412378580992,
+      "harsh_braking_reduction_percent": null,
+      "excess_ev_energy_reduction_percent": 89.43692648361227,
+      "ev_energy_intensity_reduction_percent": 0.15158175438903243
+    }
+  },
+  "case2": {
+    "setup": {
+      "duration": 1200.0,
+      "demand_vph": 3260.8695652173915,
+      "road_length_m": 12000.0,
+      "statutory_limit_kph": 120.0,
+      "T": 0.7,
+      "ve": 20.833333333333332,
+      "slow_vehicle": 533,
+      "low_speed": 18.0,
+      "incident": [
+        300.0,
+        420.0
+      ],
+      "vsl": [
+        180.0,
+        900.0
+      ],
+      "zone_start_m": 5000.0,
+      "zone_end_m": 6000.0,
+      "zone_length_m": 1000.0,
+      "limit": 31.666666666666664,
+      "limit_kph": 114.0,
+      "idm_v0": 31.666666666666664
+    },
+    "vsl_design": {
+      "baseline": {
+        "equilibrium_speed": 20.819708925455558,
+        "phi": -0.0014149500064370435,
+        "idm_v0": 33.333333333333336
+      },
+      "admissible_range": [
+        114.0,
+        120.0
+      ],
+      "objective": "maximize Phi(u) over the admissible displayed VSL range; no safety or simulation metric in online optimization",
+      "selected": {
+        "limit": 31.666666666666664,
+        "limit_kph": 114.0,
+        "idm_v0": 31.666666666666664,
+        "equilibrium_speed": 20.493303405406593,
+        "phi": 0.0023964767015933197,
+        "feasible": true,
+        "objective": 0.0023964767015933197
+      },
+      "scan": [
+        {
+          "limit": 31.666666666666664,
+          "limit_kph": 114.0,
+          "idm_v0": 31.666666666666664,
+          "equilibrium_speed": 20.493303405406593,
+          "phi": 0.0023964767015933197,
+          "feasible": true,
+          "objective": 0.0023964767015933197
+        },
+        {
+          "limit": 31.944444444444443,
+          "limit_kph": 115.0,
+          "idm_v0": 31.944444444444443,
+          "equilibrium_speed": 20.551252359102342,
+          "phi": 0.0017266027865271427,
+          "feasible": true,
+          "objective": 0.0017266027865271427
+        },
+        {
+          "limit": 32.22222222222222,
+          "limit_kph": 116.0,
+          "idm_v0": 32.22222222222222,
+          "equilibrium_speed": 20.60773993589448,
+          "phi": 0.0010708168597673429,
+          "feasible": true,
+          "objective": 0.0010708168597673429
+        },
+        {
+          "limit": 32.5,
+          "limit_kph": 117.0,
+          "idm_v0": 32.5,
+          "equilibrium_speed": 20.66279798018202,
+          "phi": 0.0004289480890430353,
+          "feasible": true,
+          "objective": 0.0004289480890430353
+        },
+        {
+          "limit": 32.77777777777778,
+          "limit_kph": 118.0,
+          "idm_v0": 32.77777777777778,
+          "equilibrium_speed": 20.716458049880785,
+          "phi": -0.00019918031640187017,
+          "feasible": false,
+          "objective": -0.00019918031640187017
+        },
+        {
+          "limit": 33.05555555555556,
+          "limit_kph": 119.00000000000001,
+          "idm_v0": 33.05555555555556,
+          "equilibrium_speed": 20.768751392940572,
+          "phi": -0.0008137506046012599,
+          "feasible": false,
+          "objective": -0.0008137506046012599
+        },
+        {
+          "limit": 33.333333333333336,
+          "limit_kph": 120.00000000000001,
+          "idm_v0": 33.333333333333336,
+          "equilibrium_speed": 20.819708925455558,
+          "phi": -0.0014149500064370435,
+          "feasible": false,
+          "objective": -0.0014149500064370435
+        }
+      ]
+    },
+    "uncontrolled": {
+      "arrival_vehicles": 1087,
+      "departure_vehicles": 1072,
+      "peak_vehicles_on_road": 537,
+      "peak_queue_vehicles": 121,
+      "queue_speed_threshold": 18.2,
+      "queue_tail_wave_speed_mps": -2.6867034838200894,
+      "peak_speed_std": 8.911767602212656,
+      "recovery_time": null,
+      "min_speed": 0.0,
+      "min_gap": 1.556672857936519,
+      "min_ttc": 2.3399364968489444,
+      "delay_vehicle_hours": 6.866051719304176,
+      "harsh_braking_vehicle_seconds": 0.0,
+      "total_ev_energy_kwh": 2239.9726194529517,
+      "ev_energy_intensity_kwh_per_100km": 17.521288592383996,
+      "mean_speed": 20.137013073272904
+    },
+    "VSL": {
+      "arrival_vehicles": 1087,
+      "departure_vehicles": 1072,
+      "peak_vehicles_on_road": 537,
+      "peak_queue_vehicles": 100,
+      "queue_speed_threshold": 18.2,
+      "queue_tail_wave_speed_mps": -0.35149234949977215,
+      "peak_speed_std": 3.1515339052537588,
+      "recovery_time": null,
+      "min_speed": 6.580425157334569,
+      "min_gap": 3.1449482391672063,
+      "min_ttc": 11.800933169797492,
+      "delay_vehicle_hours": 4.587617896077516,
+      "harsh_braking_vehicle_seconds": 0.0,
+      "total_ev_energy_kwh": 2233.7474392912977,
+      "ev_energy_intensity_kwh_per_100km": 17.30419188918151,
+      "mean_speed": 20.334886538236212
+    },
+    "benefit": {
+      "queue_reduction_percent": 17.355371900826448,
+      "peak_std_reduction_percent": 64.63626470161452,
+      "delay_reduction_percent": 33.184046907493475,
+      "harsh_braking_reduction_percent": null,
+      "ev_energy_intensity_reduction_percent": 1.2390453022778927
+    }
+  }
+}
