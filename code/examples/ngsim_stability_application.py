@@ -11,6 +11,7 @@ feedforward gain that meets a declared ring-stability margin.
 from __future__ import annotations
 
 import json
+import argparse
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -291,6 +292,8 @@ def make_figure(
     ring_baseline,
     ring_controlled,
     path,
+    *,
+    english=False,
 ):
     fig, axes = plt.subplots(2, 2, figsize=(12.0, 8.4), constrained_layout=True)
     validation_time = time[train_end_index:] - time[train_end_index]
@@ -303,38 +306,38 @@ def make_figure(
         single_parameters.minimum_gap,
         single_parameters.maximum_acceleration,
         single_parameters.comfortable_deceleration,
-    ], width=0.36, color="#c04a3a", label="单车标定")
+    ], width=0.36, color="#c04a3a", label="single-vehicle calibration" if english else "单车标定")
     axis.bar(x + 0.18, [
         fleet_parameters.time_headway,
         fleet_parameters.minimum_gap,
         fleet_parameters.maximum_acceleration,
         fleet_parameters.comfortable_deceleration,
-    ], width=0.36, color="#274c77", label="稳定性车队标定")
+    ], width=0.36, color="#274c77", label="platoon/stability calibration" if english else "稳定性车队标定")
     axis.set_xticks(x, names)
-    axis.set(title="D02(a) 两种标定得到的 IDM 参数", ylabel="参数值")
+    axis.set(title="D02(a) IDM parameters from two calibration objectives" if english else "D02(a) 两种标定得到的 IDM 参数", ylabel="parameter value" if english else "参数值")
     axis.legend(frameon=False)
 
     axis = axes[0, 1]
     index = np.arange(len(vehicle_ids))
-    axis.plot(index, fleet_validation["observed_profile"], "o-", color="0.25", label="留出数据")
-    axis.plot(index, single_validation["simulated_profile"], "s--", color="#c04a3a", label="单车标定")
-    axis.plot(index, fleet_validation["simulated_profile"], "d-", color="#274c77", label="车队标定")
+    axis.plot(index, fleet_validation["observed_profile"], "o-", color="0.25", label="held-out observation" if english else "留出数据")
+    axis.plot(index, single_validation["simulated_profile"], "s--", color="#c04a3a", label="single-vehicle calibration" if english else "单车标定")
+    axis.plot(index, fleet_validation["simulated_profile"], "d-", color="#274c77", label="platoon calibration" if english else "车队标定")
     axis.set_xticks(index, [str(item) for item in vehicle_ids], rotation=35)
-    axis.set(title="D02(b) 留出时段的逐车扰动幅值", xlabel="从领车到上游跟车（车辆 ID）", ylabel="速度标准差 [m/s]")
+    axis.set(title="D02(b) vehicle-by-vehicle fluctuation amplitude in the held-out interval" if english else "D02(b) 留出时段的逐车扰动幅值", xlabel="leader to upstream follower (vehicle ID)" if english else "从领车到上游跟车（车辆 ID）", ylabel="speed standard deviation [m/s]" if english else "速度标准差 [m/s]")
     axis.legend(frameon=False)
 
     axis = axes[1, 0]
     probe = -1
-    axis.plot(validation_time, observed_speed[train_end_index:, -1], color="0.25", lw=2.0, label="实测")
-    axis.plot(validation_time, single_validation["speed"][:, probe], color="#c04a3a", ls="--", label="单车标定模拟")
-    axis.plot(validation_time, fleet_validation["speed"][:, probe], color="#274c77", label="车队标定模拟")
-    axis.set(title=f"D02(c) 留出车辆 {vehicle_ids[-1]} 的速度验证", xlabel="留出时段 [s]", ylabel="速度 [m/s]")
+    axis.plot(validation_time, observed_speed[train_end_index:, -1], color="0.25", lw=2.0, label="observed" if english else "实测")
+    axis.plot(validation_time, single_validation["speed"][:, probe], color="#c04a3a", ls="--", label="single-vehicle simulation" if english else "单车标定模拟")
+    axis.plot(validation_time, fleet_validation["speed"][:, probe], color="#274c77", label="platoon simulation" if english else "车队标定模拟")
+    axis.set(title=f"D02(c) speed validation for held-out vehicle {vehicle_ids[-1]}" if english else f"D02(c) 留出车辆 {vehicle_ids[-1]} 的速度验证", xlabel="held-out time [s]" if english else "留出时段 [s]", ylabel="speed [m/s]" if english else "速度 [m/s]")
     axis.legend(frameon=False)
 
     axis = axes[1, 1]
-    axis.semilogy(ring_baseline["time"], ring_baseline["sigma_speed"], color="#c04a3a", label="标定基线")
+    axis.semilogy(ring_baseline["time"], ring_baseline["sigma_speed"], color="#c04a3a", label="calibrated baseline" if english else "标定基线")
     axis.semilogy(ring_controlled["time"], ring_controlled["sigma_speed"], color="#2f7d67", label=f"κ={selected_gain:.2f}")
-    axis.set(title="D02(d) 稳定性优化后的环道验证", xlabel="时间 [s]", ylabel="速度标准差 [m/s]")
+    axis.set(title="D02(d) ring validation after stability optimization" if english else "D02(d) 稳定性优化后的环道验证", xlabel="time [s]" if english else "时间 [s]", ylabel="speed standard deviation [m/s]" if english else "速度标准差 [m/s]")
     axis.legend(frameon=False)
 
     for label, axis in zip(["(a)", "(b)", "(c)", "(d)"], axes.flat):
@@ -344,7 +347,7 @@ def make_figure(
     plt.close(fig)
 
 
-def run():
+def run(*, english_figure=False):
     time, vehicle_ids, speed, gap = prepare_platoon(INPUT)
     single_parameters, single_objective, train_end_index = fit_parameters(
         time, speed, gap, "single"
@@ -441,7 +444,7 @@ def run():
     RESULTS.mkdir(parents=True, exist_ok=True)
     FIGURES.mkdir(parents=True, exist_ok=True)
     result_path = RESULTS / "ngsim_stability_application_d02.json"
-    figure_path = FIGURES / "ngsim_stability_application_d02.png"
+    figure_path = FIGURES / ("ngsim_stability_application_d02_en.png" if english_figure else "ngsim_stability_application_d02.png")
     result_path.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     make_figure(
         time,
@@ -457,6 +460,7 @@ def run():
         ring_baseline,
         ring_controlled,
         figure_path,
+        english=english_figure,
     )
     print(json.dumps(result, ensure_ascii=False, indent=2))
     print(f"figure: {figure_path}")
@@ -464,4 +468,6 @@ def run():
 
 
 if __name__ == "__main__":
-    run()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--english-figure", action="store_true", help="write an English-labelled figure")
+    run(english_figure=parser.parse_args().english_figure)

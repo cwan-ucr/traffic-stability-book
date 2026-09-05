@@ -201,7 +201,7 @@ def pair_episode_metrics(data: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame.from_records(records)
 
 
-def make_figure(data: pd.DataFrame, platoon: pd.DataFrame, episodes: pd.DataFrame, path: Path) -> None:
+def make_figure(data: pd.DataFrame, platoon: pd.DataFrame, episodes: pd.DataFrame, path: Path, *, english: bool = False) -> None:
     fig, axes = plt.subplots(2, 2, figsize=(12.0, 8.6), constrained_layout=True)
 
     axis = axes[0, 0]
@@ -218,8 +218,8 @@ def make_figure(data: pd.DataFrame, platoon: pd.DataFrame, episodes: pd.DataFram
     axis.autoscale()
     if collection is not None:
         colorbar = fig.colorbar(collection, ax=axis, pad=0.02)
-        colorbar.set_label("速度 [m/s]")
-    axis.set(title="D01(a) US-101 车道 2：位置-时间轨迹", xlabel="时间 [s]", ylabel="道路纵向位置 [m]")
+        colorbar.set_label("speed [m/s]" if english else "速度 [m/s]")
+    axis.set(title="D01(a) US-101 lane 2: position--time trajectories" if english else "D01(a) US-101 车道 2：位置-时间轨迹", xlabel="time [s]" if english else "时间 [s]", ylabel="road position [m]" if english else "道路纵向位置 [m]")
 
     axis = axes[0, 1]
     colors = plt.cm.viridis(np.linspace(0.05, 0.95, platoon["vehicle_order"].nunique()))
@@ -231,20 +231,20 @@ def make_figure(data: pd.DataFrame, platoon: pd.DataFrame, episodes: pd.DataFram
         axis.plot(group["episode_time_s"], smooth, color=colors[int(order)], label=f"{int(order)}: {int(group['vehicle_id'].iloc[0])}")
         amplitudes.append(float(np.std(detrend(smooth))))
         vehicle_ids.append(int(group["vehicle_id"].iloc[0]))
-    axis.set(title="D01(b) 连续八车队速度响应", xlabel="片段时间 [s]", ylabel="速度 [m/s]")
-    axis.legend(title="次序: 车辆 ID", ncol=2, fontsize=7, frameon=False)
+    axis.set(title="D01(b) continuous eight-vehicle speed response" if english else "D01(b) 连续八车队速度响应", xlabel="episode time [s]" if english else "片段时间 [s]", ylabel="speed [m/s]" if english else "速度 [m/s]")
+    axis.legend(title="order: vehicle ID" if english else "次序: 车辆 ID", ncol=2, fontsize=7, frameon=False)
 
     axis = axes[1, 0]
     axis.bar(np.arange(len(amplitudes)), amplitudes, color=colors)
     axis.set_xticks(np.arange(len(amplitudes)), [str(item) for item in vehicle_ids], rotation=35)
-    axis.set(title="D01(c) 同一车队的去趋势波动幅值", xlabel="从领车到上游跟车（车辆 ID）", ylabel="速度标准差 [m/s]")
+    axis.set(title="D01(c) detrended fluctuation amplitude within one platoon" if english else "D01(c) 同一车队的去趋势波动幅值", xlabel="leader to upstream follower (vehicle ID)" if english else "从领车到上游跟车（车辆 ID）", ylabel="speed standard deviation [m/s]" if english else "速度标准差 [m/s]")
 
     axis = axes[1, 1]
     stable = episodes["gain"] <= 1.0
     axis.scatter(episodes.loc[stable, "lag_s"], episodes.loc[stable, "gain"], s=25, alpha=0.75, color="#2f7d67", label="gain <= 1")
     axis.scatter(episodes.loc[~stable, "lag_s"], episodes.loc[~stable, "gain"], s=25, alpha=0.75, color="#c04a3a", label="gain > 1")
     axis.axhline(1.0, color="0.2", lw=1.0, ls="--")
-    axis.set(title="D01(d) 自然跟驰片段的逐车扰动增益", xlabel="最大相关响应滞后 [s]", ylabel="跟车/前车速度标准差")
+    axis.set(title="D01(d) empirical gain in natural following episodes" if english else "D01(d) 自然跟驰片段的逐车扰动增益", xlabel="maximum-correlation response lag [s]" if english else "最大相关响应滞后 [s]", ylabel="follower/leader speed standard deviation" if english else "跟车/前车速度标准差")
     axis.legend(frameon=False)
 
     for label, axis in zip(["(a)", "(b)", "(c)", "(d)"], axes.flat):
@@ -254,7 +254,7 @@ def make_figure(data: pd.DataFrame, platoon: pd.DataFrame, episodes: pd.DataFram
     plt.close(fig)
 
 
-def run(input_path: Path) -> None:
+def run(input_path: Path, *, english_figure: bool = False) -> None:
     data = load_and_convert(input_path)
     platoon = select_platoon(data)
     episodes = pair_episode_metrics(data)
@@ -309,8 +309,8 @@ def run(input_path: Path) -> None:
     }
     metrics_path = RESULTS / "ngsim_us101_d01_metrics.json"
     metrics_path.write_text(json.dumps(metrics, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    figure_path = FIGURES / "ngsim_us101_d01.png"
-    make_figure(data, platoon, episodes, figure_path)
+    figure_path = FIGURES / ("ngsim_us101_d01_en.png" if english_figure else "ngsim_us101_d01.png")
+    make_figure(data, platoon, episodes, figure_path, english=english_figure)
     print(json.dumps(metrics, ensure_ascii=False, indent=2))
     print(f"figure: {figure_path}")
     print(f"metrics: {metrics_path}")
@@ -320,10 +320,11 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", type=Path, default=DEFAULT_INPUT)
     parser.add_argument("--download", action="store_true", help="download the official three-minute slice first")
+    parser.add_argument("--english-figure", action="store_true", help="write an English-labelled figure")
     args = parser.parse_args()
     if args.download or not args.input.exists():
         download_official_slice(args.input)
-    run(args.input)
+    run(args.input, english_figure=args.english_figure)
 
 
 if __name__ == "__main__":

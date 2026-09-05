@@ -5,7 +5,7 @@ This directory contains the public 2026 teaching and research edition of
 
 - `traffic-stability-book.pdf`: compatibility copy of the Chinese release.
 - `traffic-stability-book-zh.pdf`: the 224-page Chinese PDF release.
-- `traffic-stability-book-en.pdf`: the independently typeset English reader's edition.
+- `traffic-stability-book-en.pdf`: the expanded independently typeset English draft; it is not yet the page-for-page translation of the Chinese edition.
 - `source/stability-enhanced.tex`: the LaTeX manuscript source.
 - `source/stability-enhanced-en.tex`: the English LaTeX manuscript source.
 - `source/assets/`: figures required by the manuscript source.

@@ -26,53 +26,53 @@
   "single_vehicle_calibration": {
     "parameters": {
       "desired_speed_mps": 33.3,
-      "time_headway_s": 0.44577890913055573,
+      "time_headway_s": 0.4457802773008567,
       "minimum_gap_m": 6.0,
-      "maximum_acceleration_mps2": 2.2573124409866345,
+      "maximum_acceleration_mps2": 2.257329268509879,
       "comfortable_deceleration_mps2": 4.5,
       "acceleration_exponent": 4.0,
       "vehicle_length_m": 4.8
     },
-    "objective": 0.9729050739433296,
+    "objective": 0.9729050740044982,
     "training": {
-      "speed_rmse_mps": 3.058205313720806,
-      "gap_rmse_m": 5.988769718708799,
-      "amplitude_profile_rmse_mps": 0.8563464053390143,
-      "last_vehicle_gain_observed": 1.3521271276582472,
-      "last_vehicle_gain_simulated": 1.4328585294700649
+      "speed_rmse_mps": 3.058201781270927,
+      "gap_rmse_m": 5.988761377048825,
+      "amplitude_profile_rmse_mps": 0.8563504665955054,
+      "last_vehicle_gain_observed": 1.352127127658247,
+      "last_vehicle_gain_simulated": 1.4328846261232993
     },
     "validation": {
-      "speed_rmse_mps": 2.782434485655148,
-      "gap_rmse_m": 4.428508803957675,
-      "amplitude_profile_rmse_mps": 0.36941336846821227,
-      "last_vehicle_gain_observed": 0.9494944575787146,
-      "last_vehicle_gain_simulated": 0.8963191995896356
+      "speed_rmse_mps": 2.782441604248292,
+      "gap_rmse_m": 4.428508457513014,
+      "amplitude_profile_rmse_mps": 0.3694101768560674,
+      "last_vehicle_gain_observed": 0.9494944575787149,
+      "last_vehicle_gain_simulated": 0.8963180133465067
     }
   },
   "stability_aware_platoon_calibration": {
     "parameters": {
       "desired_speed_mps": 33.3,
-      "time_headway_s": 0.9474272817736511,
+      "time_headway_s": 0.9474232402367628,
       "minimum_gap_m": 6.0,
-      "maximum_acceleration_mps2": 1.550010631491824,
+      "maximum_acceleration_mps2": 1.5499949065613852,
       "comfortable_deceleration_mps2": 0.5,
       "acceleration_exponent": 4.0,
       "vehicle_length_m": 4.8
     },
-    "objective": 2.329409399494734,
+    "objective": 2.3294093997065497,
     "training": {
-      "speed_rmse_mps": 1.1043828643583622,
-      "gap_rmse_m": 3.748835999041867,
-      "amplitude_profile_rmse_mps": 0.34751095555785005,
-      "last_vehicle_gain_observed": 1.3521271276582472,
-      "last_vehicle_gain_simulated": 0.9984618193807383
+      "speed_rmse_mps": 1.1043843289185322,
+      "gap_rmse_m": 3.7488304101814744,
+      "amplitude_profile_rmse_mps": 0.3475110283452253,
+      "last_vehicle_gain_observed": 1.352127127658247,
+      "last_vehicle_gain_simulated": 0.9984571225350632
     },
     "validation": {
-      "speed_rmse_mps": 0.8447388430802841,
-      "gap_rmse_m": 2.9040081403081426,
-      "amplitude_profile_rmse_mps": 0.37273997249092167,
-      "last_vehicle_gain_observed": 0.9494944575787146,
-      "last_vehicle_gain_simulated": 0.6770560775687798
+      "speed_rmse_mps": 0.8447372845788311,
+      "gap_rmse_m": 2.9040035546300227,
+      "amplitude_profile_rmse_mps": 0.37274122614965277,
+      "last_vehicle_gain_observed": 0.9494944575787149,
+      "last_vehicle_gain_simulated": 0.6770506063659691
     }
   },
   "stability_optimization": {
@@ -84,21 +84,21 @@
     "target_growth_rate_per_s": -0.002,
     "design_speed_mps": 6.185083230653684,
     "selected_gain": 0.04,
-    "baseline_growth_rate_per_s": -0.0005544021029092785,
-    "controlled_growth_rate_per_s": -0.002165673591318692,
+    "baseline_growth_rate_per_s": -0.0005540995939824359,
+    "controlled_growth_rate_per_s": -0.002165385118619603,
     "held_out_validation": {
-      "speed_rmse_mps": 0.8548897828090019,
-      "gap_rmse_m": 2.8866495177104916,
-      "amplitude_profile_rmse_mps": 0.38044147482792445,
-      "last_vehicle_gain_observed": 0.9494944575787146,
-      "last_vehicle_gain_simulated": 0.6557174079825647
+      "speed_rmse_mps": 0.8548886734093335,
+      "gap_rmse_m": 2.8866447547127554,
+      "amplitude_profile_rmse_mps": 0.3804426352055706,
+      "last_vehicle_gain_observed": 0.9494944575787149,
+      "last_vehicle_gain_simulated": 0.6557126070502921
     },
-    "ring_sigma_ratio_baseline": 0.2766786952297554,
-    "ring_sigma_ratio_controlled": 0.10342708536851873
+    "ring_sigma_ratio_baseline": 0.27673151520995715,
+    "ring_sigma_ratio_controlled": 0.10344601922039422
   },
   "equilibrium_long_wave_margin": {
-    "single_at_median": -0.25942059006128304,
-    "fleet_at_median": 0.04321284044218471,
-    "fleet_at_fifth_percentile_speed": -0.0020879169965892785
+    "single_at_median": -0.25942122136241347,
+    "fleet_at_median": 0.0432108184931945,
+    "fleet_at_fifth_percentile_speed": -0.0020900571421287872
   }
 }

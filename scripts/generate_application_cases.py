@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import base64
+import argparse
 import json
 from dataclasses import dataclass, replace
 from pathlib import Path
@@ -416,6 +417,11 @@ def pct(before: float, after: float) -> float:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--english-figures", action="store_true", help="write English-labelled manuscript figures")
+    args = parser.parse_args()
+    asset_open = ASSET_OPEN.with_name("application_open_platoon_en.png") if args.english_figures else ASSET_OPEN
+    asset_vsl = ASSET_VSL.with_name("application_moving_bottleneck_en.png") if args.english_figures else ASSET_VSL
     open_hdv = simulate_open_platoon(False)
     open_av = simulate_open_platoon(True)
     bottleneck_none = simulate_moving_bottleneck(False)
@@ -498,10 +504,13 @@ def main() -> None:
         encoding="utf-8",
     )
 
-    cjk = "/System/Library/Fonts/Hiragino Sans GB.ttc"
-    font_manager.fontManager.addfont(cjk)
-    family = font_manager.FontProperties(fname=cjk).get_name()
-    plt.rcParams.update({"font.family": family, "font.sans-serif": [family, "DejaVu Sans"], "axes.unicode_minus": False, "font.size": 8.2})
+    if args.english_figures:
+        plt.rcParams.update({"font.family": "DejaVu Sans", "axes.unicode_minus": False, "font.size": 8.2})
+    else:
+        cjk = "/System/Library/Fonts/Hiragino Sans GB.ttc"
+        font_manager.fontManager.addfont(cjk)
+        family = font_manager.FontProperties(fname=cjk).get_name()
+        plt.rcParams.update({"font.family": family, "font.sans-serif": [family, "DejaVu Sans"], "axes.unicode_minus": False, "font.size": 8.2})
     blue, red, teal, amber = "#315b8a", "#b65043", "#1f7564", "#b3832d"
 
     def trajectory(a, r, title, vmin, vmax):
@@ -522,22 +531,22 @@ def main() -> None:
         a.grid(alpha=.12)
         return lc
 
-    ASSET_OPEN.parent.mkdir(parents=True, exist_ok=True)
+    asset_open.parent.mkdir(parents=True, exist_ok=True)
     fig, ax = plt.subplots(1, 3, figsize=(12.4, 3.55), constrained_layout=True)
-    lc1 = trajectory(ax[0], open_hdv, "(a) HDV/IDM 位置--时间轨迹", 0, 14)
-    trajectory(ax[1], open_av, "(b) 协同 AV 位置--时间轨迹", 0, 14)
+    lc1 = trajectory(ax[0], open_hdv, "(a) HDV/IDM position--time trajectories" if args.english_figures else "(a) HDV/IDM 位置--时间轨迹", 0, 14)
+    trajectory(ax[1], open_av, "(b) cooperative AV position--time trajectories" if args.english_figures else "(b) 协同 AV 位置--时间轨迹", 0, 14)
     for i, pid in enumerate(open_hdv["probe_ids"]):
         ax[2].plot(open_hdv["time"], open_hdv["speed"][:,pid], color=red, lw=1.0, alpha=.45, ls="--", label=f"HDV n={pid}" if i in (0,3) else None)
         ax[2].plot(open_av["time"], open_av["speed"][:,pid], color=blue, lw=1.0, alpha=.75, label=f"AV n={pid}" if i in (0,3) else None)
-    ax[2].axvspan(100,340,color=amber,alpha=.12); ax[2].set_title("(c) 指定车辆速度响应"); ax[2].set_xlabel("time [s]"); ax[2].set_ylabel("speed [m/s]"); ax[2].legend(frameon=False,fontsize=7,ncol=2); ax[2].grid(alpha=.18)
+    ax[2].axvspan(100,340,color=amber,alpha=.12); ax[2].set_title("(c) probe-vehicle speed response" if args.english_figures else "(c) 指定车辆速度响应"); ax[2].set_xlabel("time [s]"); ax[2].set_ylabel("speed [m/s]"); ax[2].legend(frameon=False,fontsize=7,ncol=2); ax[2].grid(alpha=.18)
     fig.colorbar(lc1, ax=ax[:2], shrink=.76, pad=.015, label="trajectory speed [m/s]")
-    fig.savefig(ASSET_OPEN, dpi=220, facecolor="white")
+    fig.savefig(asset_open, dpi=220, facecolor="white")
     plt.close(fig)
 
     fig, ax = plt.subplots(2, 3, figsize=(12.4, 7.0), constrained_layout=True)
     selected_kph = selected["limit_kph"]
-    lc2 = trajectory(ax[0,0], bottleneck_none, "(a) 120 km/h 法定上限，无控制", 0, 35)
-    trajectory(ax[0,1], bottleneck_vsl, f"(b) 稳定性约束 VSL={selected_kph:.0f} km/h", 0, 35)
+    lc2 = trajectory(ax[0,0], bottleneck_none, "(a) 120 km/h statutory limit, no control" if args.english_figures else "(a) 120 km/h 法定上限，无控制", 0, 35)
+    trajectory(ax[0,1], bottleneck_vsl, f"(b) stability-constrained VSL = {selected_kph:.0f} km/h" if args.english_figures else f"(b) 稳定性约束 VSL={selected_kph:.0f} km/h", 0, 35)
     for axis, result in zip(ax[0,:2], [bottleneck_none, bottleneck_vsl]):
         good_tail = np.isfinite(result["queue_tail"])
         axis.plot(result["time"][good_tail], result["queue_tail"][good_tail] / 1000.0,
@@ -548,17 +557,17 @@ def main() -> None:
         ax[0,2].plot(bottleneck_none["time"], bottleneck_none["speed"][:,pid], color=red, lw=1.0, alpha=.45, ls="--", label=f"none n={pid}" if i in (0,3) else None)
         ax[0,2].plot(bottleneck_vsl["time"], bottleneck_vsl["speed"][:,pid], color=teal, lw=1.0, alpha=.75, label=f"VSL n={pid}" if i in (0,3) else None)
     ax[0,2].axvspan(300,420,color=red,alpha=.09); ax[0,2].axvspan(300,900,color=teal,alpha=.07)
-    ax[0,2].set_title("(c) 指定车辆速度响应"); ax[0,2].set_xlabel("time [s]"); ax[0,2].set_ylabel("speed [m/s]"); ax[0,2].legend(frameon=False,fontsize=7,ncol=2); ax[0,2].grid(alpha=.18)
+    ax[0,2].set_title("(c) probe-vehicle speed response" if args.english_figures else "(c) 指定车辆速度响应"); ax[0,2].set_xlabel("time [s]"); ax[0,2].set_ylabel("speed [m/s]"); ax[0,2].legend(frameon=False,fontsize=7,ncol=2); ax[0,2].grid(alpha=.18)
     limits = np.array([row["limit_kph"] for row in scan]); phis = np.array([row["phi"] for row in scan])
     ax[1,0].plot(limits, phis, color=blue, marker="o", ms=3); ax[1,0].axhline(0.0,color=red,ls="--",lw=1,label=r"neutral boundary $\Phi=0$")
     ax[1,0].axvline(selected_kph,color=teal,ls=":",lw=1.4,label=f"max-margin VSL {selected_kph:.0f} km/h")
-    ax[1,0].set_title("(d) 120 km/h 上限内最大化长波稳定裕度"); ax[1,0].set_xlabel("displayed VSL target speed [km/h]"); ax[1,0].set_ylabel(r"long-wave margin $\Phi$ [s$^{-2}$]"); ax[1,0].grid(alpha=.18); ax[1,0].legend(frameon=False,fontsize=7)
+    ax[1,0].set_title("(d) maximize long-wave margin below 120 km/h" if args.english_figures else "(d) 120 km/h 上限内最大化长波稳定裕度"); ax[1,0].set_xlabel("displayed VSL target speed [km/h]"); ax[1,0].set_ylabel(r"long-wave margin $\Phi$ [s$^{-2}$]"); ax[1,0].grid(alpha=.18); ax[1,0].legend(frameon=False,fontsize=7)
     bar_values = [baseline_phi, selected["phi"]]
     bars = ax[1,1].bar(["120 km/h limit", f"VSL {selected_kph:.0f} km/h"], bar_values, color=[red, teal], alpha=.8)
     ax[1,1].axhline(0.0,color="black",lw=.8)
     for bar, val in zip(bars, bar_values):
         ax[1,1].text(bar.get_x()+bar.get_width()/2, val + (0.00045 if val >= 0 else -0.00065), f"{val:+.4f}", ha="center", va="bottom" if val >= 0 else "top", fontsize=8)
-    ax[1,1].set_title("(e) 小 T 失稳工作点被 VSL 推回稳定侧")
+    ax[1,1].set_title("(e) VSL moves the short-headway point to stability" if args.english_figures else "(e) 小 T 失稳工作点被 VSL 推回稳定侧")
     ax[1,1].set_ylabel(r"long-wave margin $\Phi$ [s$^{-2}$]"); ax[1,1].grid(axis="y",alpha=.18)
     slow_id = bottleneck_vsl["events"]["slow_id"]
     slow_x = bottleneck_vsl["position"][:, slow_id] / 1000.0
@@ -566,15 +575,15 @@ def main() -> None:
                & (bottleneck_vsl["time"] <= bottleneck_vsl["events"]["control_end"]))
     ax[1,2].plot(bottleneck_vsl["time"], slow_x,color=red,lw=1.5,label="slow vehicle")
     ax[1,2].fill_between(bottleneck_vsl["time"], 5.0, 6.0, where=zone_on,color=teal,alpha=.25,label="fixed VSL zone: x=5--6 km")
-    ax[1,2].set_ylim(0,12); ax[1,2].set_title("(f) VSL 固定在事件点上游 1 km")
+    ax[1,2].set_ylim(0,12); ax[1,2].set_title("(f) VSL fixed 1 km upstream of the event" if args.english_figures else "(f) VSL 固定在事件点上游 1 km")
     ax[1,2].set_xlabel("time [s]"); ax[1,2].set_ylabel("road position x [km]"); ax[1,2].grid(alpha=.18); ax[1,2].legend(frameon=False,fontsize=7)
     fig.colorbar(lc2, ax=ax[0,:2], shrink=.72, pad=.015, label="trajectory speed [m/s]")
-    fig.savefig(ASSET_VSL, dpi=220, facecolor="white")
+    fig.savefig(asset_vsl, dpi=220, facecolor="white")
     plt.close(fig)
     print(json.dumps(metrics, ensure_ascii=False, indent=2))
     print(COMPACT)
-    print(ASSET_OPEN)
-    print(ASSET_VSL)
+    print(asset_open)
+    print(asset_vsl)
 
 
 if __name__ == "__main__":
