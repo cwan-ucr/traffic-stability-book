@@ -599,7 +599,6 @@ const CSS = `
 .tsl-scenario-tile b{font-size:10px;color:${CLR.ink};line-height:1.15}.tsl-scenario-tile span{font-size:8.5px;line-height:1.15}
 .tsl-scenario-tile.on{border-color:${CLR.teal};background:#eaf3ef;box-shadow:inset 0 0 0 1px ${CLR.teal}}
 .tsl-scenario-tile.on .symbol{color:${CLR.teal}}
-.tsl-parameter-cta{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:8px 0 0;border-top:1px solid ${CLR.rule};margin-top:9px;font-size:10.5px;color:${CLR.soft}}
 .tsl-modal-backdrop{position:fixed;inset:0;z-index:1200;background:rgba(22,35,29,.28);display:grid;place-items:center;padding:18px}
 .tsl-mini-modal{width:min(420px,100%);max-height:calc(100vh - 36px);overflow:auto;background:${CLR.panel};border:1px solid ${CLR.rule};box-shadow:0 18px 55px rgba(20,37,29,.28);padding:14px}
 .tsl-modal-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;border-bottom:1px solid ${CLR.rule};padding-bottom:9px;margin-bottom:12px}.tsl-modal-head b{display:block;font-size:14px}.tsl-modal-head span{display:block;font-size:10px;color:${CLR.soft};margin-top:3px;line-height:1.4}
@@ -1958,10 +1957,6 @@ function App() {
                       <span className="symbol">{tile.symbol}</span><b>{tile.title}</b><span>{tile.on ? "已启用 · 点击调整" : tile.note}</span>
                     </button>
                   ))}
-                </div>
-                <div className="tsl-parameter-cta">
-                  <span>环道、IDM、扰动与数值参数均可保持仿真状态直接改动。</span>
-                  <button className="tsl-chip" type="button" onClick={() => setSettingsOpen((open) => !open)}>{settingsOpen ? "收起面板" : "完整参数"}</button>
                 </div>
               </Card>
 
