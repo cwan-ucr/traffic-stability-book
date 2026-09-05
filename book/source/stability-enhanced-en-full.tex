@@ -198,6 +198,12 @@ shows
   \begin{tcolorbox}[chapterguide,title=\textbf{Chapter Guide: #1}]
   #2
   \end{tcolorbox}}
+% Every numbered experiment has a clickable companion-lab entry. The case
+% parameter lets the online platform display the matching reproduction guide.
+\newcommand{\onlinelab}[2]{%
+  \par\smallskip\noindent
+  {\small\sffamily\color{teal}\textbf{Verify online: }\href{https://cwan-ucr.github.io/traffic-stability-book/lab/?case=#1}{#2 (open the matching lab)}}%
+  \par\smallskip}
 % Each main section uses the same format but provides different thinking tasks based on content type.
 % The second parameter explicitly ties the question to the current section’s topic, and the third parameter provides references for further reading.
 \newcommand{\studyquestionsmodel}[1]{%
@@ -2167,6 +2173,7 @@ When plotting, plot each sample at $(t,x_n\bmod L)$ and map colors using $v_n$; 
 \end{tcolorbox}
 
 \subsection{Manual Example W01: How do three IDM vehicles complete two RK4 time steps?}\label{sub:worked-micro-rk4}
+\onlinelab{W01}{W01: two RK4 updates for three IDM vehicles on a ring}
 
 
 
@@ -3101,6 +3108,7 @@ $f_v^2<4f_s$ ($0<\zeta<1$): A pair of conjugate complex roots with real parts eq
 
 \section{Numerical Tests on Local Stability: Can a Single Vehicle Recover on Its Own?}
 \sectionstudy{experiment}{Numerical Tests on Local Stability: Can a Single Vehicle Recover on Its Own?}{wilsonward2011,ororsz2010}
+\onlinelab{L01}{L01: locally stable, critically damped, and underdamped recovery}
 
 
 
@@ -3223,6 +3231,7 @@ Local stability addresses only the question of whether a single vehicle eventual
 
 \section{Teaching Example M01: From characteristic roots to RK4 overshoot values}
 \sectionstudy{experiment}{Teaching Example M01: From Eigenvalues to RK4 Overshoot}{wilsonward2011,ororsz2010}
+\onlinelab{M01}{M01: local underdamped recovery and RK4 overshoot}
 
 
 \label{sub:m01-local}
@@ -3657,6 +3666,7 @@ Both the restoring and dissipative signals are weak, with a net damping of only 
 The loop allows only $k_m=2\pi m/N$. The most dangerous continuous long waves occur at $k\to0$, but the smallest non-zero wavenumber attainable with a finite number of vehicles is $k_{\min}=2\pi/N$; if $N$ is too small, the first discrete point may skip over the range of positive growth rates, leading a simulation to mistakenly classify an inherently unstable platoon of infinite length as stable. Section E5 of Chapter \ref{sec:appx} provides a quantitative test of this effect.\end{tcolorbox}
 
 \subsection{Teaching Example M02: Why the same IDM model is stable with 12 vehicles but unstable with 20}
+\onlinelab{M02}{M02: finite rings and discrete wavelengths}
 
 
 \label{sub:m02-finite-ring}
@@ -4603,6 +4613,9 @@ Local stability is always satisfied across the entire speed range; however, with
 \section{Numerical Validation E1–E3: Neutral Line, Growth Rate, and Dominant Mode}
 \sectionstudy{experiment}{Numerical Validation E1–E3: Neutral Line, Growth Rate, and Dominant Mode}{treiber2000,sugiyama2008,treiberkesting2013}
 \label{sub:baseexp}
+\onlinelab{E1}{E1: neutral-stability boundary scan}
+\onlinelab{E2}{E2: growth-rate and angular-frequency fit}
+\onlinelab{E3}{E3: most unstable discrete wavenumber}
 
 \begin{tcolorbox}[experimentbox,title=\textbf{Experimental Setup}]
 
@@ -4702,6 +4715,7 @@ The analytical growth rate not only indicates stability or instability but also 
 
 \section{Specific trajectory results: Stability and instability of the original IDM}
 \sectionstudy{experiment}{Specific trajectory results: Stability and instability of the original IDM}{treiber2000,treiberkesting2013}
+\onlinelab{S0}{S0: 1800 s stable/unstable position-time trajectories for the baseline IDM}
 
 
 
@@ -4715,6 +4729,7 @@ Figure ~\ref{fig:traj-s0} shows results using the same local deceleration pulse 
 
 \section{Instructional Example M03: Comparison of stable/unstable original IDM behavior under the same perturbation}
 \sectionstudy{experiment}{Instructional Example M03: Comparison of stable/unstable original IDM behavior under the same perturbation}{treiber2000,treiberkesting2013}\label{sec:mini-examples}
+\onlinelab{M03}{M03: baseline-IDM single-mode envelopes}
 
 M03 serves as the minimal dynamic verification case for the theoretical boundaries discussed in this chapter. It involves a trajectory shorter than 1800 s and excites only a single Fourier mode, allowing for a direct comparison between the analytical growth rate and the fitted slope; the remaining cases (M01, M02, and M04–M06) are addressed in the sections covering local stability, long-wave behavior, lead-vehicle acceleration, numerical convergence, and the LWR model, respectively.
 
@@ -5194,6 +5209,7 @@ Report the fitting time window, number of samples, and perturbation amplitude; s
 
 \section{Tutorial Example M05: How to Distinguish Between Traffic Instability and Numerical Instability}
 \sectionstudy{experiment}{Tutorial Example M05: How to Distinguish Between Traffic Instability and Numerical Instability}{sugiyama2008,treiberkesting2013}
+\onlinelab{M05}{M05: time-step convergence check}
 
 
 \label{sub:m05-convergence}
@@ -5323,6 +5339,7 @@ $\sigma_v(1800)/\sigma_v(0)$ in the figure caption is the ratio of the initial t
 
 \section{Online Intervention Experiment: Comparing Before and After Control on the Same Trajectory}
 \sectionstudy{experiment}{Online Intervention Experiment: Comparing Before and After Control on the Same Trajectory}{milanes2014,stern2018}
+\onlinelab{M04}{M04: enable leader-acceleration feedback without resetting the state}
 
 
 
@@ -5558,6 +5575,26 @@ Numerical methods for measuring the growth rate, dominant wavenumber, wave veloc
 
 \section{Correspondence between E1–E14 and Chapters}
 \sectionstudy{experiment}{Correspondence between E1–E14 and Chapters}{sugiyama2008,treiberkesting2013}
+
+\begin{tcolorbox}[experimentbox,title=\textbf{Clickable online experiment index}]
+\small\sffamily
+\href{https://cwan-ucr.github.io/traffic-stability-book/lab/?case=E1}{E1} ·
+\href{https://cwan-ucr.github.io/traffic-stability-book/lab/?case=E2}{E2} ·
+\href{https://cwan-ucr.github.io/traffic-stability-book/lab/?case=E3}{E3} ·
+\href{https://cwan-ucr.github.io/traffic-stability-book/lab/?case=E4}{E4} ·
+\href{https://cwan-ucr.github.io/traffic-stability-book/lab/?case=E5}{E5} ·
+\href{https://cwan-ucr.github.io/traffic-stability-book/lab/?case=E6}{E6} ·
+\href{https://cwan-ucr.github.io/traffic-stability-book/lab/?case=E7}{E7} ·
+\href{https://cwan-ucr.github.io/traffic-stability-book/lab/?case=E8}{E8} ·
+\href{https://cwan-ucr.github.io/traffic-stability-book/lab/?case=E9}{E9} ·
+\href{https://cwan-ucr.github.io/traffic-stability-book/lab/?case=E10}{E10} ·
+\href{https://cwan-ucr.github.io/traffic-stability-book/lab/?case=E11}{E11} ·
+\href{https://cwan-ucr.github.io/traffic-stability-book/lab/?case=E12}{E12} ·
+\href{https://cwan-ucr.github.io/traffic-stability-book/lab/?case=E13}{E13} ·
+\href{https://cwan-ucr.github.io/traffic-stability-book/lab/?case=E14}{E14}.
+
+Each link opens the bilingual companion platform with the matching case identifier, section, and reproduction guidance.
+\end{tcolorbox}
 
 \begin{center}
 \scriptsize
@@ -6695,6 +6732,7 @@ into its own control law, the entire unstable region originally spanning 0.91–
 
 \section{Numerical Verification E2/E4: Does the feedforward truly suppress amplification?}
 \sectionstudy{experiment}{Numerical Verification E2/E4: Does the feedforward truly suppress amplification?}{milanes2014,ploeg2014,feng2019}
+\onlinelab{E4}{E4: vehicle-to-vehicle transfer under leader-acceleration feedforward}
 
 
 
@@ -6825,6 +6863,7 @@ $\kappa=0.15$ exceeds the threshold by only $0.016$ across the entire speed rang
 
 \section{Concrete trajectory results: Stabilizing effect of the acceleration gain of the leading vehicle}
 \sectionstudy{application}{Concrete trajectory results: Stabilizing effect of the acceleration gain of the leading vehicle}{ngsim2016,thiemann2008,krajewski2018}
+\onlinelab{S1}{S1: 1800 s trajectory comparison with leader-acceleration feedforward}
 
 
 
@@ -6852,6 +6891,7 @@ Figure ~ \ref{fig:traj-s1} is fixed at $v_e=8$ m/s with the same disturbance. Wi
 
 \section{Tutorial Example M04: No State Reset, Stability Control Enabled Midway}
 \sectionstudy{experiment}{Tutorial Example M04: No State Reset, Stability Control Enabled Midway}{milanes2014,ploeg2014,feng2019}
+\onlinelab{M04}{M04: activate leader-acceleration feedback during an ongoing run}
 
 
 
@@ -8175,6 +8215,7 @@ However,
 
 \section{Numerical Validation E3: Bidirectional Implicit Coupling}
 \sectionstudy{experiment}{Numerical Validation E3: Bidirectional Implicit Coupling}{swaroop1996,stuedli2017,feng2019}
+\onlinelab{E3B}{E3: ring spectrum with implicit bidirectional acceleration coupling}
 
 
 
@@ -8271,6 +8312,7 @@ After incorporating the bidirectional acceleration feedback of the total quantit
 
 \section{Specific trajectory results: Bidirectional acceleration coupling}
 \sectionstudy{experiment}{Specific trajectory results: Bidirectional acceleration coupling}{ngsim2016,thiemann2008,krajewski2018}
+\onlinelab{S2}{S2: 1800 s trajectory comparison for bidirectional acceleration coupling}
 
 
 
@@ -8911,6 +8953,7 @@ Differences between forward and backward exponential kernels in terms of availab
 
 \section{Numerical Verification E3: Same Total Volume, Different Spatial Allocation}
 \sectionstudy{experiment}{Numerical Verification E3: Same Total Volume, Different Spatial Allocation}{lenz1999,feng2019}
+\onlinelab{E3M}{E3: spatial allocation of multi-predecessor/follower information}
 
 
 
@@ -9043,6 +9086,7 @@ When apportioned forward, the nearest-neighbor gain of just $0.027$ is sufficien
 
 \section{Specific Trajectory Results: Spatial Allocation of Information from Multiple Leading Vehicles}
 \sectionstudy{experiment}{Specific Trajectory Results: Spatial Allocation of Information from Multiple Leading Vehicles}{lenz1999,feng2019}
+\onlinelab{S3}{S3: 1800 s trajectories with multi-vehicle feedback}
 
 
 
@@ -10200,6 +10244,8 @@ Before applying the conclusion, first confirm what the independent variable of t
 
 \section{Numerical verification of E9/E10: Closure of the stability band and decrease in wave speed}
 \sectionstudy{experiment}{Numerical Validation E9/E10: Closure of the Stability Band and Decrease in Wave Velocity}{wilsonward2011,stuedli2017}
+\onlinelab{E9}{E9: rear-gap weight and closure of the unstable band}
+\onlinelab{E10}{E10: long-wave propagation speed under rearward feedback}
 
 
 
@@ -10293,7 +10339,9 @@ Backward headway feedback simultaneously achieves two things: it shrinks the uns
 \end{tcolorbox}
 
 \section{Specific trajectory results: backward headway and relative velocity feedback}
-\sectionstudy{experiment}{Specific trajectory results: backward headway and relative velocity feedback}{ngsim2016,thiemann2008,krajewski2018}Figure ~\ref{fig:traj-s4} compares $p=0$ and $p=0.30>p_c$ at $v_e=8$ m/s. After incorporating backward spacing feedback, $\sigma_v(1800)/\sigma_v(0)$ decreases from $48.49$ to $0.00843$, with a terminal slope of $-5.16\times10^{-4}$ s$^{-1}$; the speed range for the 30th vehicle contracts to $7.9961$–$8.0041$ m/s, and the spacing range contracts to $14.0269$–$14.0446$ m. The trajectory band not only attenuates, but its propagation slope also differs from the baseline, corresponding to a reduction in wave speed $c_1=(1-p)V'$.
+\sectionstudy{experiment}{Specific trajectory results: backward headway and relative velocity feedback}{ngsim2016,thiemann2008,krajewski2018}
+\onlinelab{S4}{S4: 1800 s trajectory comparison with rear-gap feedback}
+Figure ~\ref{fig:traj-s4} compares $p=0$ and $p=0.30>p_c$ at $v_e=8$ m/s. After incorporating backward spacing feedback, $\sigma_v(1800)/\sigma_v(0)$ decreases from $48.49$ to $0.00843$, with a terminal slope of $-5.16\times10^{-4}$ s$^{-1}$; the speed range for the 30th vehicle contracts to $7.9961$–$8.0041$ m/s, and the spacing range contracts to $14.0269$–$14.0446$ m. The trajectory band not only attenuates, but its propagation slope also differs from the baseline, corresponding to a reduction in wave speed $c_1=(1-p)V'$.
 
 
 
@@ -10727,6 +10775,7 @@ This leads to a counterintuitive design tip:
 
 \section{Numerical verification E8: Long-wave threshold remains unchanged; finite-frequency potential well deepens.}
 \sectionstudy{experiment}{Numerical verification E8: Long-wave threshold remains unchanged; finite-frequency potential well deepens.}{ororsz2004,ororsz2010}
+\onlinelab{E8}{E8: frequency-domain scan of sensing and communication delays}
 
 
 
@@ -10789,6 +10838,7 @@ All $\Psi(\omega)$ curves originate from the same $\Psi(0)$ but dip as delay inc
 
 \section{Specific trajectory results: Reaction delay induces stop-and-go waves.}
 \sectionstudy{experiment}{Specific trajectory results: Reaction-delay-induced stop-and-go waves}{ororsz2004,ororsz2010}
+\onlinelab{S5}{S5: 1800 s stop-and-go trajectories induced by reaction delay}
 
 Figure ~\ref{fig:traj-s5}: fixed at $v_e=19$ m/s. Without delay, the value is $\sigma_v(1800)/\sigma_v(0)=0.0106$; upon introducing a delay of $\tau_0=1.10$ s, the ratio rises to $165.68$, and the system enters a state of finite-amplitude stop-and-go waves. The probe vehicle speed ranges from $0$ to $26.01$ m/s, and the spacing ranges from $3.04$ to $60.26$ m. The minimum spacing remains positive; thus, the strong oscillations observed in the figure are not numerical artifacts caused by vehicle overlap. This case study demonstrates that even if the high-speed operating point is stable in the absence of delay, the system can be driven into an unstable regime by reaction delay.
 
@@ -12719,6 +12769,8 @@ First, specify the vehicle order and the set of lead vehicles that each AV can r
 
 \section{Numerical Verification E6/E7: Formulation, Sorting, and AV Grouping}
 \sectionstudy{experiment}{Numerical Verification E6/E7: Formulation, Sorting, and AV Grouping}{talebpour2016,feng2019,stern2018}
+\onlinelab{E6}{E6: ordering effects in heterogeneous traffic}
+\onlinelab{E7}{E7: two-dimensional AV penetration-speed stability plane}
 
 
 
@@ -12884,6 +12936,8 @@ When $G_n$ is fixed for each vehicle, the terminal product is independent of the
 
 \section{Specific Trajectory Results: Fixed Vehicle Attributes and Adjacent Pair Rules}
 \sectionstudy{experiment}{Specific Trajectory Results: Fixed Vehicle Attributes and Adjacent Pair Rules}{ngsim2016,thiemann2008,krajewski2018}
+\onlinelab{S6}{S6: trajectories for three heterogeneous-vehicle orderings}
+\onlinelab{S7}{S7: mixed AV/HDV grouping and stability plane}
 
 
 
@@ -14573,6 +14627,7 @@ The reference IDM does not satisfy the strict $V''(s_e)=0$ condition at either o
 
 \section{E11: 1800 s test with limited amplitude and interpretation of weak nonlinearity}
 \sectionstudy{experiment}{E11: 1800 s test with limited amplitude and interpretation of weak nonlinearity}{komatsu1995,bando1995,ororsz2010}
+\onlinelab{E11}{E11: finite-amplitude wave steepening and nonlinear saturation}
 
 
 
@@ -14732,6 +14787,7 @@ can predict, while the weak nonlinear term explains the subsequent steepness of 
 
 \section{E12: Diagram of the response with limited amplitude under linearly stable conditions}
 \sectionstudy{experiment}{E12: Diagram of the response with limited amplitude under linearly stable conditions}{komatsu1995,bando1995,ororsz2010}
+\onlinelab{E12}{E12: finite-amplitude braking recovery in a linearly stable state}
 
 
 
@@ -15233,6 +15289,7 @@ Therefore, the LWR is well-suited for calculating queue boundaries, shock veloci
 
 
 \subsection{Manual Example W02: How to Update Four LWR Grids in Two Steps}
+\onlinelab{W02}{W02: two finite-volume updates on four LWR cells}
 
 
 \label{sub:worked-lwr}
@@ -15313,6 +15370,7 @@ the discrete interpretation of the conservation form; $Q'(\rho)\rho_x$ cannot be
 
 
 \subsection{Teaching Example M06: Verifiable Shock Waves on the IDM Basic Diagram}
+\onlinelab{M06}{M06: an LWR shock on the IDM equilibrium fundamental diagram}
 
 
 
@@ -16082,6 +16140,7 @@ Check $\rho_j>0$, the conservation of the total number of vehicles, and grid con
 \end{tcolorbox}
 
 \subsection{Manual Example W03: How to Simultaneously Update Density and Velocity in Three ARZ Grids}
+\onlinelab{W03}{W03: conservative flux and relaxation updates on three ARZ cells}
 
 
 \label{sub:worked-arz}
@@ -17560,6 +17619,7 @@ Decompose the initial Fourier coefficients into $\widehat U_m(0)=R\boldsymbol\al
 
 \section{E13: Comparison of macro-stability and instability on the same IDM base map}
 \sectionstudy{experiment}{E13: Comparison of macro-stability and instability on the same IDM base map}{treiberkesting2011,daganzo1995,awrascle2000}
+\onlinelab{E13}{E13: stable/unstable spectra of the IDM-consistent ARZ model}
 
 
 
@@ -18477,6 +18537,7 @@ Under stable operating conditions, $-A=14.684$ m/s applies, while $B=21.335>-A$ 
 
 \section{E14: Micro-Macro Spatiotemporal Diagram Under Identical IDM Conditions}
 \sectionstudy{experiment}{E14: Micro-Macro Spatiotemporal Diagrams Under Identical IDM Conditions}{jin2003,helbing2001,treiberkesting2013}
+\onlinelab{E14}{E14: speed-field comparison between IDM and ARZ}
 
 
 
@@ -19168,6 +19229,7 @@ Minor errors in position reconstruction are significantly amplified after two ti
 
 \section{D01’s Reproducible Processing Workflow}
 \sectionstudy{data}{D01’s Reproducible Processing Workflow}{ngsim2016,thiemann2008,krajewski2018}
+\onlinelab{D01}{D01: natural disturbance-propagation evidence from NGSIM US-101}
 
 
 
@@ -19405,6 +19467,7 @@ interval obtained from segment-level bootstrap sampling is $[0.954,1.077]$, and 
 
 \section{D02 Overall Design: From Real-World Fleets to Evaluable Stability Applications}
 \sectionstudy{data}{D02 Overall Design: From Real-World Fleets to Evaluable Stability Applications}{kesting2008,ossen2009,punzo2012}
+\onlinelab{D02}{D02: stability-aware calibration, holdout validation, and spectral optimization}
 
 
 \label{sub:ngsim-d02}
@@ -20055,6 +20118,7 @@ The value of stability analysis extends beyond simply drawing a “stable/unstab
 
 \section{Case Study A: Disturbance Propagation and Cooperative AVs in Open Fleets}
 \sectionstudy{application}{Case Study A: Disturbance Propagation and Cooperative AVs in Open Fleets}{milanes2014,talebpour2016,stern2018}
+\onlinelab{A01}{Case A: stability benefits of cooperative AVs in an open platoon}
 
 
 \label{sub:application-open-platoon}
@@ -20317,6 +20381,7 @@ The first term represents motor copper losses; the second term represents the po
 
 \section{Specific Case B: Low-Speed Vehicles in Continuous Traffic Flow and Variable Speed Limit Zones with Fixed Geometric Configurations}
 \sectionstudy{application}{Specific Case B: Low-Speed Vehicles in Continuous Traffic Flow and Variable Speed Limit Zones with Fixed Geometric Configurations}{hegyi2005,carlson2010}
+\onlinelab{A02}{Case B: event-triggered fixed VSL upstream of a slow-vehicle bottleneck}
 
 
 \label{sub:application-moving-bottleneck}

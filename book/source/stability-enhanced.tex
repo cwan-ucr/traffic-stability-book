@@ -207,6 +207,12 @@
   \begin{tcolorbox}[chapterguide,title=\textbf{本章导学：#1}]
   #2
   \end{tcolorbox}}
+% 每个编号实验均有一个可点击的实验台入口。case 参数让在线版显示
+% 对应的复现提示；PDF 仍可在离线环境中正常阅读。
+\newcommand{\onlinelab}[2]{%
+  \par\smallskip\noindent
+  {\small\sffamily\color{teal}\textbf{在线核验：}\href{https://cwan-ucr.github.io/traffic-stability-book/lab/?case=#1}{#2（打开对应实验台）}}%
+  \par\smallskip}
 
 % 每个主节使用同一版式，但按内容类型给出不同的思考任务。
 % 第二个参数把问题明确绑定到当前节主题，第三个参数给出可继续查阅的文献。
@@ -744,6 +750,7 @@ F(s_e,v_e,0)=0.
 \end{tcolorbox}
 
 \subsection{手算例 W01：三辆 IDM 车辆怎样完成两个 RK4 时间步}
+\onlinelab{W01}{W01：三辆 IDM 在环道上的两个 RK4 更新步}
 \label{sub:worked-micro-rk4}
 
 为了把上述伪代码落到数字，取三辆完全相同的 IDM 车辆，参数使用本书基准值，环长
@@ -1098,6 +1105,7 @@ f_s > 0
 \section{局部稳定性数值试验：单车能否自行恢复}
 \sectionstudy{experiment}{局部稳定性数值试验：单车能否自行恢复}{wilsonward2011,ororsz2010}
 \label{sub:localexp}
+\onlinelab{L01}{L01：局部稳定、临界阻尼与欠阻尼恢复}
 
 为了把上述根的判定变成可观察结果，固定前车以 $v_l=v_e$ 匀速行驶，只仿真一辆跟驰车。初始时保持平衡间距 $s(0)=s_e$，但令跟驰车瞬间减速
 \begin{equation}
@@ -1145,6 +1153,7 @@ v_0=33.3\ \text{m/s},\quad T=0.5\ \text{s},\quad s_0=2\ \text{m},
 \section{教学算例 M01：从特征根到 RK4 超调值}
 \sectionstudy{experiment}{教学算例 M01：从特征根到 RK4 超调值}{wilsonward2011,ororsz2010}
 \label{sub:m01-local}
+\onlinelab{M01}{M01：局部欠阻尼恢复与 RK4 超调}
 
 取一个能手工核对的线性局部方程
 \begin{equation}
@@ -1416,6 +1425,7 @@ e^{-ik}-1=-ik-\frac{k^2}{2}+O(k^3),
 \end{tcolorbox}
 
 \subsection{教学算例 M02：同一 IDM，为什么 12 辆稳定而 20 辆失稳}
+\onlinelab{M02}{M02：有限环道与离散波长}
 \label{sub:m02-finite-ring}
 
 固定原始 IDM 与 $v_e=8$ m/s，只改变环道车辆数。对每个允许波数
@@ -1784,6 +1794,9 @@ v_e \in (0.91,\; 18.61)\ \text{m/s}
 \section{数值验证 E1--E3：中性线、增长率与主导模态}
 \sectionstudy{experiment}{数值验证 E1--E3：中性线、增长率与主导模态}{treiber2000,sugiyama2008,treiberkesting2013}
 \label{sub:baseexp}
+\onlinelab{E1}{E1：中性稳定线扫描}
+\onlinelab{E2}{E2：线性增长率与角频率拟合}
+\onlinelab{E3}{E3：最不稳定离散波数}
 
 \begin{tcolorbox}[experimentbox,title=\textbf{实验设置}]
 E1 在 $v_e\in(0,v_0)$ 上扫描 $\Phi(v_e)$ 并以二分法细化变号点。E2--E3 取 $N=120$、$v_e=8$ m/s、$s_e=14.0234$ m、$L=N(s_e+l)=2.2828$ km；在均匀平衡态上叠加幅值 $2\times10^{-3}$ m/s 的单一速度模态扰动。微观方程用四阶 Runge--Kutta 法、$\Delta t=0.02$ s 积分 300 s；在 $60$--$220$ s 的线性窗口拟合
@@ -1818,6 +1831,7 @@ E3 主导模态 & $m^*=4$，$k^*=0.20944$ rad/veh & FFT 峰值位于 $m=4$ & 完
 
 \section{具体轨迹结果：原始 IDM 的稳定与失稳}
 \sectionstudy{experiment}{具体轨迹结果：原始 IDM 的稳定与失稳}{treiber2000,treiberkesting2013}
+\onlinelab{S0}{S0：原始 IDM 的 1800 s 稳定／失稳位置--时间轨迹}
 
 图~\ref{fig:traj-s0} 使用同一个局部减速脉冲，只改变平衡速度。稳定工况 $v_e=25$ m/s 中，$\sigma_v(1800)/\sigma_v(0)=0.00336$，探针车始终保持在 $24.9991$--$25.0006$ m/s、间距保持在 $54.8905$--$54.8996$ m；扰动色带很快消散。失稳工况 $v_e=8$ m/s 中，该比值增至 $48.49$，末段增长率为 $+3.12\times10^{-3}$ s$^{-1}$；探针车速度扩大到 $5.24$--$11.28$ m/s，间距扩大到 $9.73$--$19.67$ m。时空轨迹上的斜向红蓝带不断加深，直接显示扰动向上游传播并放大。
 
@@ -1832,6 +1846,7 @@ E3 主导模态 & $m^*=4$，$k^*=0.20944$ rad/veh & FFT 峰值位于 $m=4$ & 完
 \section{教学算例 M03：同一扰动下的原始 IDM 稳定／失稳对照}
 \sectionstudy{experiment}{教学算例 M03：同一扰动下的原始 IDM 稳定／失稳对照}{treiber2000,treiberkesting2013}
 \label{sec:mini-examples}
+\onlinelab{M03}{M03：原始 IDM 单模态包络}
 
 M03 是本章理论边界的最小动态核对。它比 1800 s 轨迹短，也只激发一个 Fourier
 模态，因此可以直接比较解析增长率和拟合斜率；其余 M01、M02、M04--M06 已分别放在
@@ -1996,6 +2011,7 @@ F6 $+$ F1（混合交通） & L4 & 前馈能力取决于\textbf{前车类型}，
 \section{教学算例 M05：交通失稳与数值失稳怎样分开}
 \sectionstudy{experiment}{教学算例 M05：交通失稳与数值失稳怎样分开}{sugiyama2008,treiberkesting2013}
 \label{sub:m05-convergence}
+\onlinelab{M05}{M05：时间步长收敛检查}
 
 对 M03 的失稳工况用 RK4 分别取 $\Delta t=0.4,0.2,0.1$ s，并把初始幅值
 减至 $2\times10^{-4}$ m/s，在 $150$--$550$ s 拟合增长率。三次结果为
@@ -2030,6 +2046,7 @@ $1.53\times10^{-6}\%$。
 
 \section{在线干预实验：在同一条轨迹上比较控制前后}
 \sectionstudy{experiment}{在线干预实验：在同一条轨迹上比较控制前后}{milanes2014,stern2018}
+\onlinelab{M04}{M04：不停机开启前车加速度反馈}
 
 静态参数扫描回答“某组固定参数是否稳定”，但工程控制还需要回答另一个问题：\textbf{已经形成的走停波能否在不中断交通状态的情况下被逐步消除？} 为此，实验台允许仿真开始后改变前车加速度前馈增益、后车加速度增益、多车权重和后向间距权重；车辆的位置、速度、历史缓冲区和已记录图像均保留，不重新初始化。
 
@@ -2084,20 +2101,20 @@ $1.53\times10^{-6}\%$。
 \toprule
 & \textbf{实验} & \textbf{操作} & \textbf{核心对照} & \textbf{对应章节} \\
 \midrule
-E1 & 中性稳定线 & 扫描 $v_e$ 或 IDM 参数并二分临界点 & 数值增长率变号 vs 判据函数变号 & 第~\ref{sec:num}~章 \\
-E2 & 增长率 & 小扰动线性窗口拟合 & 实测 $\operatorname{Re}\lambda$ vs 环道谱 & \S\ref{sub:baseexp} \\
-E3 & 最不稳定波数 & 空间 FFT & 实测 $m^*$ vs 谱峰 & 第~\ref{sec:bilat}~章, 第~\ref{sec:multi}~章 \\
-E4 & 逐车传递比 & 开链正弦扫频 & $|Y_n/Y_{n-1}|$ vs $|G(i\omega)|$ & 第~\ref{sec:lead}~章 \\
-E5 & 有限 $N$ & 扫描 $N=10$--$300$ & 临界带 vs $\cos(2\pi/N)$ & 第~\ref{sec:appx}~章 \\
-E6 & 排序效应 & 固定配方，改变排列 & 中途峰值与末端乘积 & \S\ref{sub:hetorder} \\
-E7 & AV 渗透率 & 扫描 AV 比例、速度与组数 & 二维稳定域、$p_{\min}$、$n_{\rm grp}^{\max}$ & \S\ref{sub:mixed} \\
-E8 & 时间延迟 & 扫描 $\tau_0,\tau_a$ & $\Psi(0)$ 与 $\min_\omega\Psi$ & 第~\ref{sec:delay}~章 \\
-E9 & 后视权重 & 扫描 $p$ & 不稳定带闭合点 $p_c$ & 第~\ref{sec:reargap}~章 \\
-E10 & 波速 & 相位拟合与时空图 & $c_1=(1-p)V'(s_e)$ & 第~\ref{sec:reargap}~章 \\
-E11 & 弱非线性演化 & 小幅正弦扰动长时积分 & 线性增长、波形陡化与饱和 & \S\ref{sub:nonlinear-exp} \\
-E12 & 有限幅恢复 & 稳定工况扫描单车制动幅值 & 峰值、末窗残余与恢复时间 & 第~\ref{sec:nonlinear}~章 \\
-E13 & 宏观稳定性 & IDM 基本图上的松弛 ARZ 稳定／失稳工作点 & 色散关系与定点速度--时间曲线 & \S\ref{sub:macro-experiment} \\
-E14 & 微观--宏观一致性 & IDM 基本图与 ARZ 长波闭合下并排仿真 & 增长率、波速和速度时空图相似度 & \S\ref{sub:micro-macro-experiment} \\
+\href{https://cwan-ucr.github.io/traffic-stability-book/lab/?case=E1}{E1} & 中性稳定线 & 扫描 $v_e$ 或 IDM 参数并二分临界点 & 数值增长率变号 vs 判据函数变号 & 第~\ref{sec:num}~章 \\
+\href{https://cwan-ucr.github.io/traffic-stability-book/lab/?case=E2}{E2} & 增长率 & 小扰动线性窗口拟合 & 实测 $\operatorname{Re}\lambda$ vs 环道谱 & \S\ref{sub:baseexp} \\
+\href{https://cwan-ucr.github.io/traffic-stability-book/lab/?case=E3}{E3} & 最不稳定波数 & 空间 FFT & 实测 $m^*$ vs 谱峰 & 第~\ref{sec:bilat}~章, 第~\ref{sec:multi}~章 \\
+\href{https://cwan-ucr.github.io/traffic-stability-book/lab/?case=E4}{E4} & 逐车传递比 & 开链正弦扫频 & $|Y_n/Y_{n-1}|$ vs $|G(i\omega)|$ & 第~\ref{sec:lead}~章 \\
+\href{https://cwan-ucr.github.io/traffic-stability-book/lab/?case=E5}{E5} & 有限 $N$ & 扫描 $N=10$--$300$ & 临界带 vs $\cos(2\pi/N)$ & 第~\ref{sec:appx}~章 \\
+\href{https://cwan-ucr.github.io/traffic-stability-book/lab/?case=E6}{E6} & 排序效应 & 固定配方，改变排列 & 中途峰值与末端乘积 & \S\ref{sub:hetorder} \\
+\href{https://cwan-ucr.github.io/traffic-stability-book/lab/?case=E7}{E7} & AV 渗透率 & 扫描 AV 比例、速度与组数 & 二维稳定域、$p_{\min}$、$n_{\rm grp}^{\max}$ & \S\ref{sub:mixed} \\
+\href{https://cwan-ucr.github.io/traffic-stability-book/lab/?case=E8}{E8} & 时间延迟 & 扫描 $\tau_0,\tau_a$ & $\Psi(0)$ 与 $\min_\omega\Psi$ & 第~\ref{sec:delay}~章 \\
+\href{https://cwan-ucr.github.io/traffic-stability-book/lab/?case=E9}{E9} & 后视权重 & 扫描 $p$ & 不稳定带闭合点 $p_c$ & 第~\ref{sec:reargap}~章 \\
+\href{https://cwan-ucr.github.io/traffic-stability-book/lab/?case=E10}{E10} & 波速 & 相位拟合与时空图 & $c_1=(1-p)V'(s_e)$ & 第~\ref{sec:reargap}~章 \\
+\href{https://cwan-ucr.github.io/traffic-stability-book/lab/?case=E11}{E11} & 弱非线性演化 & 小幅正弦扰动长时积分 & 线性增长、波形陡化与饱和 & \S\ref{sub:nonlinear-exp} \\
+\href{https://cwan-ucr.github.io/traffic-stability-book/lab/?case=E12}{E12} & 有限幅恢复 & 稳定工况扫描单车制动幅值 & 峰值、末窗残余与恢复时间 & 第~\ref{sec:nonlinear}~章 \\
+\href{https://cwan-ucr.github.io/traffic-stability-book/lab/?case=E13}{E13} & 宏观稳定性 & IDM 基本图上的松弛 ARZ 稳定／失稳工作点 & 色散关系与定点速度--时间曲线 & \S\ref{sub:macro-experiment} \\
+\href{https://cwan-ucr.github.io/traffic-stability-book/lab/?case=E14}{E14} & 微观--宏观一致性 & IDM 基本图与 ARZ 长波闭合下并排仿真 & 增长率、波速和速度时空图相似度 & \S\ref{sub:micro-macro-experiment} \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -2315,6 +2332,7 @@ f_a = \frac{\gamma}{1+\gamma} < 1 \quad (\gamma>0)
 
 \section{数值验证 E2/E4：前馈是否真的抑制放大}
 \sectionstudy{experiment}{数值验证 E2/E4：前馈是否真的抑制放大}{milanes2014,ploeg2014,feng2019}
+\onlinelab{E4}{E4：前车加速度前馈的逐车传递比}
 
 取与 E2 相同的 $N=120$、$v_e=8$ m/s 工况，把前馈增益设为 $\kappa=0.15>\kappa_c$。先对 $\omega\in[0,6]$ rad/s 扫描 $|G(i\omega)|$，再以微观仿真拟合最慢衰减模态。
 
@@ -2340,6 +2358,7 @@ $\kappa=0.15$ 只比全速域阈值高 $0.016$，但已经把 $v_e=8$ m/s 处的
 
 \section{具体轨迹结果：前车加速度收益的稳定化作用}
 \sectionstudy{application}{具体轨迹结果：前车加速度收益的稳定化作用}{ngsim2016,thiemann2008,krajewski2018}
+\onlinelab{S1}{S1：前车加速度前馈的 1800 s 轨迹对照}
 
 图~\ref{fig:traj-s1} 固定 $v_e=8$ m/s 与同一扰动。无前馈时 $\sigma_v(1800)/\sigma_v(0)=48.49$；加入 $\kappa=0.15$ 后该比值降为 $0.0191$，末段斜率由 $+3.12\times10^{-3}$ 变为 $-3.89\times10^{-4}$ s$^{-1}$。第 30 辆车的速度范围由 $5.24$--$11.28$ m/s 收缩至 $7.994$--$8.009$ m/s，间距范围由 $9.73$--$19.67$ m 收缩至 $14.026$--$14.049$ m。
 
@@ -2354,6 +2373,7 @@ $\kappa=0.15$ 只比全速域阈值高 $0.016$，但已经把 $v_e=8$ m/s 处的
 \section{教学算例 M04：不重置状态，中途开启稳定控制}
 \sectionstudy{experiment}{教学算例 M04：不重置状态，中途开启稳定控制}{milanes2014,ploeg2014,feng2019}
 \label{sub:m04-online-control}
+\onlinelab{M04}{M04：运行中开启前车加速度反馈}
 
 固定 $N=30$、$v_e=8$ m/s，把初始模态幅值提高到 $0.2$ m/s，使波动先在
 原始 IDM 下发展。$t=300$ s 开始把前车加速度增益在 60 s 内由 0 线性提高到
@@ -2763,6 +2783,7 @@ f_s = 0.1421,\qquad f_v = -0.6803,\qquad f_{v_l} = 0.4650
 
 \section{数值验证 E3：双向隐式耦合}
 \sectionstudy{experiment}{数值验证 E3：双向隐式耦合}{swaroop1996,stuedli2017,feng2019}
+\onlinelab{E3B}{E3：双向加速度隐式耦合的环道谱}
 
 取 $N=120$、$v_e=8$ m/s，比较基准模型与“前视为主、回望为辅”的 $(f_a,f_b)=(0.30,0.10)$。每个 RK4 子步均求解循环线性系统 $(I-f_aS-f_bS^{-1})\bm a=\bm a_{\rm IDM}$，残差阈值取 $10^{-9}$。
 
@@ -2789,6 +2810,7 @@ S2：$f_a=0.30,f_b=0.10$ & 1 & $-0.00148012$ & 扰动衰减 \\
 
 \section{具体轨迹结果：双向加速度耦合}
 \sectionstudy{experiment}{具体轨迹结果：双向加速度耦合}{ngsim2016,thiemann2008,krajewski2018}
+\onlinelab{S2}{S2：双向加速度耦合的 1800 s 轨迹对照}
 
 图~\ref{fig:traj-s2} 在同一 $v_e=8$ m/s 失稳点加入 $(f_a,f_b)=(0.30,0.10)$。全车扰动首末比由基准的 $48.49$ 降至 $0.00106$，末段斜率为 $-1.48\times10^{-3}$ s$^{-1}$，与本章最右特征根一致。第 30 辆车的速度仅在 $7.9981$--$8.0017$ m/s 内变化，间距仅在 $14.0326$--$14.0381$ m 内变化。
 
@@ -2993,6 +3015,7 @@ f_a \ge 0.1336\times0.2 = 0.027
 
 \section{数值验证 E3：同一总量，不同空间分配}
 \sectionstudy{experiment}{数值验证 E3：同一总量，不同空间分配}{lenz1999,feng2019}
+\onlinelab{E3M}{E3：多前／后车信息的空间分配}
 
 在 $N=120$、$v_e=8$ m/s 上把指数核截断到前／后方 20 辆车，并直接扫描全部离散波数。纯多前车取 $(\alpha,f_a)=(0.8,0.027)$，其无限核总量为 $0.135$；纯多后车取 $(\beta,f_b)=(0.5,0.08)$，总量为 $0.16$。
 
@@ -3019,6 +3042,7 @@ f_a \ge 0.1336\times0.2 = 0.027
 
 \section{具体轨迹结果：多前车信息的空间分摊}
 \sectionstudy{experiment}{具体轨迹结果：多前车信息的空间分摊}{lenz1999,feng2019}
+\onlinelab{S3}{S3：多前／后车反馈的 1800 s 轨迹对照}
 
 图~\ref{fig:traj-s3} 固定 $v_e=8$ m/s，用 $m=20$、$\alpha=0.8$、$f_a=0.027$ 的指数核替代最近邻反馈。基准 IDM 的 $\sigma_v(1800)/\sigma_v(0)=48.49$，多前车反馈下则为 $0.0377$，末段斜率为 $-3.06\times10^{-4}$ s$^{-1}$。探针车速度限制在 $7.9918$--$8.0143$ m/s、间距限制在 $14.0214$--$14.0592$ m，说明分摊后的弱单车增益仍能使扰动逐圈消散。
 
@@ -3347,6 +3371,8 @@ $p$ & 不稳定速度带 [m/s] & 放宽因子 \\
 
 \section{数值验证 E9/E10：稳定带闭合与波速下降}
 \sectionstudy{experiment}{数值验证 E9/E10：稳定带闭合与波速下降}{wilsonward2011,stuedli2017}
+\onlinelab{E9}{E9：后向间距权重与稳定带闭合}
+\onlinelab{E10}{E10：后向反馈下的长波传播速度}
 
 E9 对 $p\in[0,0.4]$ 与 $v_e\in(0,v_0)$ 做二维扫描，记录不稳定带宽；E10 固定 $v_e=8$ m/s、$N=120$，由最低模态相位斜率测波速。
 
@@ -3372,6 +3398,7 @@ $p=0.223$ 最右根 & 应位于左半平面临界侧 & $-1.2747\times10^{-4}$ s$
 
 \section{具体轨迹结果：后向间距与相对速度反馈}
 \sectionstudy{experiment}{具体轨迹结果：后向间距与相对速度反馈}{ngsim2016,thiemann2008,krajewski2018}
+\onlinelab{S4}{S4：后向间距反馈的 1800 s 轨迹对照}
 
 图~\ref{fig:traj-s4} 在 $v_e=8$ m/s 比较 $p=0$ 与 $p=0.30>p_c$。加入后视反馈后，$\sigma_v(1800)/\sigma_v(0)$ 从 $48.49$ 降到 $0.00843$，末段斜率为 $-5.16\times10^{-4}$ s$^{-1}$；第 30 辆车速度范围收缩至 $7.9961$--$8.0041$ m/s，间距范围收缩至 $14.0269$--$14.0446$ m。轨迹色带不仅衰减，其传播斜率也与基准不同，对应 $c_1=(1-p)V'$ 的波速降低。
 
@@ -3639,6 +3666,7 @@ $f_b\ne0$ 时标量逐车传递函数不再适用（\S\ref{sub:nofail}），而�
 
 \section{数值验证 E8：长波门槛不动，有限频率势阱下沉}
 \sectionstudy{experiment}{数值验证 E8：长波门槛不动，有限频率势阱下沉}{ororsz2004,ororsz2010}
+\onlinelab{E8}{E8：反应与通信延迟的频域扫描}
 
 实验分两层。第一层只计算 $\Psi(0)$，检查不同延迟下长波门槛是否保持不变；第二层在 $\omega\in[0,6]$ rad/s 上细扫 $\Psi(\omega)$，以 $\min_\omega\Psi=0$ 定位有限频率失稳。最后用带历史缓冲的时域仿真复核稳定符号。
 
@@ -3664,6 +3692,7 @@ $\tau_a:0\to1.5$ s & $\kappa$ 下界恒为 $0.134$ & 上界由 $1.00$ 降到 $0.
 
 \section{具体轨迹结果：反应延迟诱发走停波}
 \sectionstudy{experiment}{具体轨迹结果：反应延迟诱发走停波}{ororsz2004,ororsz2010}
+\onlinelab{S5}{S5：时间延迟诱发走停波的 1800 s 轨迹}
 
 图~\ref{fig:traj-s5} 固定 $v_e=19$ m/s。无延迟时 $\sigma_v(1800)/\sigma_v(0)=0.0106$；仅加入 $\tau_0=1.10$ s 后，该比值升至 $165.68$，并进入有限振幅走停波。探针车速度扩展到 $0$--$26.01$ m/s，间距扩展到 $3.04$--$60.26$ m。最小间距仍为正，因此图中强振荡不是车辆穿透造成的数值伪影。该算例说明：即使无延迟的高速度工作点稳定，有限频率势阱也可被反应延迟推入失稳区。
 
@@ -4345,6 +4374,8 @@ M_AM_H\ne M_HM_A,
 
 \section{数值验证 E6/E7：配方、排序与 AV 编组}
 \sectionstudy{experiment}{数值验证 E6/E7：配方、排序与 AV 编组}{talebpour2016,feng2019,stern2018}
+\onlinelab{E6}{E6：异质车流的排列效应}
+\onlinelab{E7}{E7：AV 渗透率、速度与编组的二维稳定域}
 
 取 $N=120$、$v_e=9$ m/s、AV 占比 $30\%$。E6 先假设 AV 的 $\kappa=0.5$ 是本车固定属性，只改变排列；E7 再改用更现实的相邻对规则：AV--AV 取 $\kappa=0.5$，AV--HDV 取 $\kappa_0=0.15$，HDV 取 $0$。
 
@@ -4378,6 +4409,8 @@ M_AM_H\ne M_HM_A,
 
 \section{具体轨迹结果：固定车型属性与相邻对规则}
 \sectionstudy{experiment}{具体轨迹结果：固定车型属性与相邻对规则}{ngsim2016,thiemann2008,krajewski2018}
+\onlinelab{S6}{S6：异质车流的三种排序轨迹}
+\onlinelab{S7}{S7：AV/HDV 混合编组的轨迹与稳定平面}
 
 图~\ref{fig:traj-s6} 对应 E6：30\% AV 的前馈增益固定为 $\kappa=0.5$，只改变排列。单一 AV 团簇与均匀分布的首末比分别为 $0.0228$ 与 $0.0219$，末段斜率均为负，验证环道的最终稳定性主要由配方决定；但探针车的峰值与波到达顺序不同，体现排序对中途响应的影响。
 
@@ -4704,6 +4737,7 @@ V'''=\frac{3[s_e''(v_e)]^2}{[s_e'(v_e)]^5}-\frac{s_e'''(v_e)}{[s_e'(v_e)]^4}.
 \section{E11：1800 s 有限幅试验与弱非线性解释}
 \sectionstudy{experiment}{E11：1800 s 有限幅试验与弱非线性解释}{komatsu1995,bando1995,ororsz2010}
 \label{sub:nonlinear-exp}
+\onlinelab{E11}{E11：有限幅扰动的波形陡化与非线性饱和}
 
 取 $N=120$、$\Delta t=0.05$ s、RK4 和 1800 s 时间窗。第一组在均匀平衡态上注入 $m=4$、速度振幅 $0.02$ m/s 的正弦扰动；第二组在小扰动线稳定的 $v_e=20$ m/s 工况中，只让一辆车瞬间减速 $0.5$--$18$ m/s，检查有限幅恢复。
 
@@ -4737,6 +4771,7 @@ $v_e=20$ m/s，单车减速 $18$ m/s & 全程峰值 $3.921$ m/s；最后 300 s �
 
 \section{E12：线性稳定工况的有限幅响应图}
 \sectionstudy{experiment}{E12：线性稳定工况的有限幅响应图}{komatsu1995,bando1995,ororsz2010}
+\onlinelab{E12}{E12：稳定工况下的有限幅制动恢复}
 
 为把“线性稳定”和“对大扰动恢复得快”分开，在 $v_e=20$ m/s、$N=120$ 的线性稳定工况中，仅改变 0 号车的瞬时减速幅值 $A_0$，其余参数与 E11 相同。下表给出全过程最大速度标准差和最后 300 s 的平均速度标准差：
 \begin{center}
@@ -4899,6 +4934,7 @@ s_{\rm sh}
 因此 LWR 很适合计算排队边界、激波速度和稀疏波，但“瞬时平衡”意味着它没有独立的速度恢复模态，也不能从模型内部产生跟驰扰动逐车放大的机制。
 
 \subsection{手算例 W02：四个 LWR 网格怎样更新两步}
+\onlinelab{W02}{W02：四格 LWR 有限体积更新}
 \label{sub:worked-lwr}
 
 先用一个便于手算的三角形基本图演示有限体积更新：
@@ -4945,6 +4981,7 @@ $10$ 与 $50$ veh/km。初值为
 守恒形式的离散含义；不能直接在跳跃处用 $Q'(\rho)\rho_x$ 作中心差分。
 
 \subsection{教学算例 M06：IDM 基本图上的可核对激波}
+\onlinelab{M06}{M06：IDM 基本图下的 LWR 激波}
 \label{sub:m06-lwr}
 
 W02 为了手算采用三角形图；M06 则换回本书的 IDM 平衡基本图。在 4 km 道路上
@@ -5249,6 +5286,7 @@ U_j^{n+1}
 \end{tcolorbox}
 
 \subsection{手算例 W03：三个 ARZ 网格怎样同时更新密度与速度}
+\onlinelab{W03}{W03：三格 ARZ 守恒量、通量与松弛更新}
 \label{sub:worked-arz}
 
 取三个周期单元，$\Delta x=50$ m、$\Delta t=0.5$ s、$\tau=10$ s，并选
@@ -5871,6 +5909,7 @@ U(x_j,t)=\sum_m\widehat U_m(t)e^{\mathrm{i}K_mx_j}.
 \section{E13：同一 IDM 基本图上的宏观稳定与失稳对照}
 \sectionstudy{experiment}{E13：同一 IDM 基本图上的宏观稳定与失稳对照}{treiberkesting2011,daganzo1995,awrascle2000}
 \label{sub:macro-experiment}
+\onlinelab{E13}{E13：IDM 一致 ARZ 的稳定／失稳谱实验}
 
 为了与前文的基准跟驰模型保持一致，这里不再使用独立假设的 Greenshields 曲线，而直接由 IDM 平衡关系生成宏观基本图：
 \begin{equation}
@@ -6140,6 +6179,7 @@ p'(\rho_e)=\frac{B}{\rho_e}.
 \section{E14：相同 IDM 条件下的微观--宏观时空图}
 \sectionstudy{experiment}{E14：相同 IDM 条件下的微观--宏观时空图}{jin2003,helbing2001,treiberkesting2013}
 \label{sub:micro-macro-experiment}
+\onlinelab{E14}{E14：IDM 与 ARZ 的速度时空图对照}
 
 两种模型使用完全相同的 $v_e$、$\rho_e$、环道长度和初始扰动：
 \begin{itemize}[leftmargin=1.4em,itemsep=3pt]
@@ -6267,6 +6307,7 @@ NGSIM 由美国联邦公路管理局组织采集，US--101 数据使用同步视
 
 \section{D01 的可复现处理流程}
 \sectionstudy{data}{D01 的可复现处理流程}{ngsim2016,thiemann2008,krajewski2018}
+\onlinelab{D01}{D01：NGSIM US--101 自然扰动传播证据}
 
 数据管线按下列固定顺序执行：
 \begin{enumerate}[leftmargin=1.6em,itemsep=3pt]
@@ -6336,6 +6377,7 @@ save derived CSV + JSON metrics + four-panel figure
 \section{D02 总体设计：从真实车队到可评价的稳定性应用}
 \sectionstudy{data}{D02 总体设计：从真实车队到可评价的稳定性应用}{kesting2008,ossen2009,punzo2012}
 \label{sub:ngsim-d02}
+\onlinelab{D02}{D02：稳定性标定、留出验证与谱约束优化}
 
 D02 使用 D01 自动选出的八车队
 \[
@@ -6505,6 +6547,7 @@ D01 的完整入口为 \texttt{examples/analyze\_ngsim\_us101.py}；D02 的标�
 \section{具体案例 A：开放车队的扰动传播与协同 AV}
 \sectionstudy{application}{具体案例 A：开放车队的扰动传播与协同 AV}{milanes2014,talebpour2016,stern2018}
 \label{sub:application-open-platoon}
+\onlinelab{A01}{案例 A：开放车队中的协同 AV 稳定性收益}
 
 先考虑一个可直接对应道路跟驰试验的开放边界车队。共有 $N=60$ 辆车，均匀初始速度为 $v_e=8$ m/s，初始净间距取 IDM 平衡值。头车在 $t=100$ s 开始施加
 \begin{equation}
@@ -6573,6 +6616,7 @@ E_{\rm EV}=\int_0^{T_f}P_{\rm EV}(t)\,{\rm d}t.
 \section{具体案例 B：连续车流中的低速车辆与固定空间可变限速区}
 \sectionstudy{application}{具体案例 B：连续车流中的低速车辆与固定空间可变限速区}{hegyi2005,carlson2010}
 \label{sub:application-moving-bottleneck}
+\onlinelab{A02}{案例 B：低速瓶颈下的事件触发型固定 VSL}
 
 第二个案例使用连续开放交通流，并保留高速公路法定最高限速 $120$ km/h。为按读者建议构造一个真正的线性失稳高速工况，本书只把 IDM 期望车头时距从基准值减小到 $T=0.7$ s；其余 IDM 参数保持不变。取净间距 $s_e=18$ m、车长 $l=5$ m 时，$v_0=120$ km/h 对应的均匀平衡速度为 $v_e=74.95$ km/h，流率约为 $3261$ veh/h。这个流率高于常规人工驾驶单车道能力，因而应理解为一个\textbf{短时距、高需求的理论验证工况}，而不是普通 HDV 容量标定。$0$--$1200$ s 内车辆持续进入并从下游驶出，共有 1087 辆新车越过上游边界。
 
