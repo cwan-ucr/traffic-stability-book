@@ -481,6 +481,20 @@
     ["长波稳定裕度 Φ [s⁻²]", "Long-Wave Stability Margin Φ [s⁻²]"],
     ["排队尾部 · 形成段", "Queue Tail · Formation Stage"],
     ["相对平衡 [%]", "Relative to Equilibrium [%]"],
+    ["混合交通", "Mixed Traffic"],
+    ["车辆 0 探针", "Vehicle 0 Probe"],
+    ["探针", "Probe"],
+    ["39,187 条 · 119 辆车", "39,187 records · 119 vehicles"],
+    ["时空图  车号 × 时间", "Spatiotemporal Diagram · Vehicle Index × Time"],
+    ["速度偏差（红=慢 蓝=快）", "Speed deviation (red=slow · blue=fast)"],
+    ["↑ 车号 0（波向上游即向下传播）", "↑ Vehicle 0 (upstream propagation moves downward)"],
+    ["测量：", "Measurement: "],
+    ["量", "Quantity"],
+    ["增长率 Re λ [1/s]", "Growth Rate Re λ [1/s]"],
+    ["车辆 0 时序", "Vehicle 0 Time Series"],
+    ["时序", "Time Series"],
+    ["各车经历的最大速度偏差", "Maximum Speed Deviation Experienced by Each Vehicle"],
+    ["速度偏差", "Speed Deviation"],
   ];
 
   const ordered = pairs.slice().sort((a, b) => b[0].length - a[0].length);
@@ -508,7 +522,11 @@
     if (language !== "en") return;
     const scope = root && root.nodeType ? root : document.documentElement;
     if (scope.nodeType === Node.TEXT_NODE) {
-      if (/[\u3400-\u9fff]/.test(scope.nodeValue || "")) scope.nodeValue = translate(scope.nodeValue);
+      const original = scope.nodeValue || "";
+      if (/[\u3400-\u9fff]/.test(original)) {
+        const translated = translate(original);
+        if (translated !== original) scope.nodeValue = translated;
+      }
       return;
     }
     if (scope.nodeType !== Node.ELEMENT_NODE && scope.nodeType !== Node.DOCUMENT_NODE) return;
@@ -516,13 +534,20 @@
     const nodes = [];
     while (walker.nextNode()) nodes.push(walker.currentNode);
     nodes.forEach((node) => {
-      if (/[\u3400-\u9fff]/.test(node.nodeValue || "")) node.nodeValue = translate(node.nodeValue);
+      const original = node.nodeValue || "";
+      if (/[\u3400-\u9fff]/.test(original)) {
+        const translated = translate(original);
+        if (translated !== original) node.nodeValue = translated;
+      }
     });
     const elements = scope.querySelectorAll ? scope.querySelectorAll("[aria-label],[title],[placeholder]") : [];
     elements.forEach((element) => {
       ["aria-label", "title", "placeholder"].forEach((name) => {
         const value = element.getAttribute(name);
-        if (value && /[\u3400-\u9fff]/.test(value)) element.setAttribute(name, translate(value));
+        if (value && /[\u3400-\u9fff]/.test(value)) {
+          const translated = translate(value);
+          if (translated !== value) element.setAttribute(name, translated);
+        }
       });
     });
   }
