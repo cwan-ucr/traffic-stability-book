@@ -564,6 +564,21 @@ function Card({ title, note, children }) {
   );
 }
 
+function MiniModal({ title, subtitle, onClose, children }) {
+  return (
+    <div className="tsl-modal-backdrop" role="presentation" onMouseDown={onClose}>
+      <section className="tsl-mini-modal" role="dialog" aria-modal="true" aria-label={title}
+        onMouseDown={(event) => event.stopPropagation()}>
+        <div className="tsl-modal-head">
+          <div><b>{title}</b>{subtitle && <span>{subtitle}</span>}</div>
+          <button className="tsl-icon-close" type="button" onClick={onClose} aria-label="关闭参数窗口">×</button>
+        </div>
+        {children}
+      </section>
+    </div>
+  );
+}
+
 const CSS = `
 .tsl-shell{max-width:1540px;margin:0 auto;padding:16px 18px 36px}
 .tsl-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
@@ -578,6 +593,18 @@ const CSS = `
 .tsl-focus .tsl-live-side{display:none}
 .tsl-focus .tsl-ring-wrap{max-width:min(900px,92vw);margin:0 auto}
 .tsl-live-side{display:grid;gap:12px}
+.tsl-scenario-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+.tsl-scenario-tile{min-height:70px;border:1px solid ${CLR.rule};background:${CLR.paper};padding:7px 5px;color:${CLR.soft};cursor:pointer;text-align:center;display:grid;place-items:center;gap:3px}
+.tsl-scenario-tile .symbol{font:700 18px/1 ui-monospace,monospace;color:${CLR.blue}}
+.tsl-scenario-tile b{font-size:10px;color:${CLR.ink};line-height:1.15}.tsl-scenario-tile span{font-size:8.5px;line-height:1.15}
+.tsl-scenario-tile.on{border-color:${CLR.teal};background:#eaf3ef;box-shadow:inset 0 0 0 1px ${CLR.teal}}
+.tsl-scenario-tile.on .symbol{color:${CLR.teal}}
+.tsl-parameter-cta{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:8px 0 0;border-top:1px solid ${CLR.rule};margin-top:9px;font-size:10.5px;color:${CLR.soft}}
+.tsl-modal-backdrop{position:fixed;inset:0;z-index:1200;background:rgba(22,35,29,.28);display:grid;place-items:center;padding:18px}
+.tsl-mini-modal{width:min(420px,100%);max-height:calc(100vh - 36px);overflow:auto;background:${CLR.panel};border:1px solid ${CLR.rule};box-shadow:0 18px 55px rgba(20,37,29,.28);padding:14px}
+.tsl-modal-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;border-bottom:1px solid ${CLR.rule};padding-bottom:9px;margin-bottom:12px}.tsl-modal-head b{display:block;font-size:14px}.tsl-modal-head span{display:block;font-size:10px;color:${CLR.soft};margin-top:3px;line-height:1.4}
+.tsl-icon-close{border:0;background:transparent;color:${CLR.soft};font-size:24px;line-height:1;cursor:pointer;padding:0 2px}
+.tsl-modal-toggle{display:flex;gap:8px;align-items:center;font-size:11.5px;margin-bottom:12px}
 .tsl-statusline{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
 .tsl-status{background:${CLR.paper};padding:8px 9px;min-width:0}
 .tsl-status b{display:block;font-family:ui-monospace,monospace;font-size:14px;margin-top:2px}
@@ -646,6 +673,7 @@ const CSS = `
   .tsl-app-picker,.tsl-app-grid{grid-template-columns:1fr}
   .tsl-statusline{grid-template-columns:repeat(2,1fr)}
   .tsl-ring-canvas{max-height:none}
+  .tsl-scenario-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .tsl-main.settings{padding:10px}
   .tsl-main.settings>.tsl-side{grid-template-columns:1fr}
 }
@@ -907,6 +935,8 @@ function App() {
   const [selectedVehicle, setSelectedVehicle] = useState(0);
   const [fieldMode, setFieldMode] = useState("速度");
   const [activeTab, setActiveTab] = useState("live");
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [feedbackModal, setFeedbackModal] = useState(null);
   const [nonlinearCase, setNonlinearCase] = useState("steepening");
   const [nonlinearTimeIndex, setNonlinearTimeIndex] = useState(4);
   const [nonlinearAmplitude, setNonlinearAmplitude] = useState(1.0);
@@ -1836,6 +1866,22 @@ function App() {
     ["Wu 模型单位里程电耗", "17.521 → 17.328 kWh/100km", "下降 1.10%"],
   ];
 
+  const feedbackTiles = [
+    { id: "front", symbol: "κ", title: "前车加速度", note: "前馈", on: useFF, enable: () => setUseFF(true) },
+    { id: "back", symbol: "fᵦ", title: "后车加速度", note: "双向", on: useBackAcc, enable: () => setUseBackAcc(true) },
+    { id: "multi", symbol: "m", title: "多车信息", note: "核衰减", on: useMulti, enable: () => setUseMulti(true) },
+    { id: "rear", symbol: "p", title: "后向间距", note: "后视", on: useRearGap, enable: () => setUseRearGap(true) },
+    { id: "delay", symbol: "τ", title: "时间延迟", note: "感知 / 通信", on: useDelay, enable: () => setUseDelay(true) },
+    { id: "hetero", symbol: "HV", title: "异质车流", note: "重型 / 保守", on: useHetero, enable: () => setUseHetero(true) },
+    { id: "mixed", symbol: "AV", title: "混合交通", note: "AV 编组", on: useMixed, enable: () => setUseMixed(true) },
+  ];
+
+  const openFeedback = (tile) => {
+    tile.enable();
+    setFeedbackModal(tile.id);
+  };
+  const activeFeedback = feedbackTiles.find((tile) => tile.id === feedbackModal);
+
   return (
     <div style={{
       background: CLR.paper, color: CLR.ink, minHeight: "100vh", padding: "0",
@@ -1878,7 +1924,6 @@ function App() {
           ["nonlinear", "非线性现象"],
           ["applications", "应用案例"],
           ["data", "真实数据"],
-          ["settings", "模型设置"],
         ].map(([key, label]) => (
           <button key={key} className={`tsl-tab ${activeTab === key ? "on" : ""}`}
             aria-selected={activeTab === key} onClick={() => setActiveTab(key)}>{label}</button>
@@ -1905,6 +1950,21 @@ function App() {
             </div>
 
             <aside className="tsl-live-side">
+              <Card title="场景与反馈" note="点击图标开启并调整">
+                <div className="tsl-scenario-grid">
+                  {feedbackTiles.map((tile) => (
+                    <button key={tile.id} type="button" className={`tsl-scenario-tile ${tile.on ? "on" : ""}`}
+                      onClick={() => openFeedback(tile)} aria-pressed={tile.on} title={`调整${tile.title}参数`}>
+                      <span className="symbol">{tile.symbol}</span><b>{tile.title}</b><span>{tile.on ? "已启用 · 点击调整" : tile.note}</span>
+                    </button>
+                  ))}
+                </div>
+                <div className="tsl-parameter-cta">
+                  <span>环道、IDM、扰动与数值参数均可保持仿真状态直接改动。</span>
+                  <button className="tsl-chip" type="button" onClick={() => setSettingsOpen((open) => !open)}>{settingsOpen ? "收起面板" : "完整参数"}</button>
+                </div>
+              </Card>
+
               <Card title="运行控制" note="不中断仿真">
                 <div className="tsl-toolbar">
                   <button className="tsl-btn" onClick={() => setRunning((r) => !r)} style={{
@@ -1923,11 +1983,10 @@ function App() {
               </Card>
 
               <Card title="在线干预" note="参数变化不会重置车辆状态">
-                <label style={{ display: "flex", gap: 8, alignItems: "center", fontSize: 11.5, marginBottom: 10 }}>
-                  <input type="checkbox" checked={useFF} onChange={(e) => setUseFF(e.target.checked)} style={{ accentColor: CLR.blue }} />
-                  启用前车加速度反馈
-                </label>
-                <Slider label="目标前馈增益 κ" value={kappa} set={setKappa} min={0} max={0.9} step={0.005} unit="" />
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginBottom: 8, fontSize: 11.5 }}>
+                  <span>前车加速度反馈：<b style={{ color: useFF ? CLR.teal : CLR.soft }}>{useFF ? `κ = ${kappa.toFixed(3)}` : "未启用"}</b></span>
+                  <button className="tsl-chip" type="button" onClick={() => { setUseFF(true); setFeedbackModal("front"); }}>调整 κ</button>
+                </div>
                 <Slider label="平滑过渡时间" value={rampDuration} set={setRampDuration} min={0} max={300} step={5} unit="s" />
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 7 }}>
                   <button className="tsl-btn" onClick={applyOnline} style={{
@@ -2171,7 +2230,13 @@ function App() {
         </section>
       </div>
 
-      <div className={`tsl-main ${activeTab}`}>
+      <div className={`tsl-main ${(activeTab === "settings" || (activeTab === "live" && settingsOpen)) ? "settings" : ""}`}>
+        {(activeTab === "settings" || (activeTab === "live" && settingsOpen)) && (
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12, marginBottom: 14 }}>
+            <div><b style={{ fontSize: 14 }}>完整参数面板</b><span style={{ display: "block", marginTop: 3, fontSize: 10.5, color: CLR.soft }}>修改后会立刻更新目标理论；运行中的车辆状态保持不重置。</span></div>
+            {activeTab === "live" && <button className="tsl-chip" type="button" onClick={() => setSettingsOpen(false)}>收起</button>}
+          </div>
+        )}
         {/* 左侧控制栏 */}
         <div className="tsl-side" style={{ borderRight: `1px solid ${CLR.rule}`, background: CLR.paper }}>
           <Group title="场景">
@@ -2479,6 +2544,63 @@ function App() {
           )}
         </div>
       </div>
+
+      {feedbackModal && activeFeedback && (
+        <MiniModal title={activeFeedback.title} subtitle="打开后即可在线修改；运行中的车辆状态不会被重置。" onClose={() => setFeedbackModal(null)}>
+          <label className="tsl-modal-toggle">
+            <input type="checkbox" checked={activeFeedback.on}
+              onChange={(event) => {
+                const enabled = event.target.checked;
+                if (feedbackModal === "front") setUseFF(enabled);
+                if (feedbackModal === "back") setUseBackAcc(enabled);
+                if (feedbackModal === "multi") setUseMulti(enabled);
+                if (feedbackModal === "rear") setUseRearGap(enabled);
+                if (feedbackModal === "delay") setUseDelay(enabled);
+                if (feedbackModal === "hetero") setUseHetero(enabled);
+                if (feedbackModal === "mixed") setUseMixed(enabled);
+              }} style={{ accentColor: CLR.teal }} />
+            启用此机制
+          </label>
+
+          {feedbackModal === "front" && <>
+            <Slider label="前馈增益 κ" value={kappa} set={setKappa} min={0} max={0.95} step={0.005} unit="" disabled={!useFF} />
+            <div className="tsl-live-note">前车加速度通过通信或感知前馈进入控制律，主要削弱车队放大，而不改变单车局部闭环根。</div>
+          </>}
+          {feedbackModal === "back" && <>
+            <Slider label="后车加速度增益 fᵦ" value={fb} set={setFb} min={-0.5} max={0.55} step={0.005} unit="" disabled={!useBackAcc} />
+            <div className="tsl-live-note">该项形成双向加速度耦合；环道谱会同时检查有限波长模态。</div>
+          </>}
+          {feedbackModal === "multi" && <>
+            <Slider label="前向衰减 α" value={alpha} set={setAlpha} min={0} max={0.9} step={0.01} unit="" disabled={!useMulti} />
+            <Slider label="后向衰减 β" value={beta} set={setBeta} min={0} max={0.9} step={0.01} unit="" disabled={!useMulti} />
+            <Slider label="前视车辆数 m₊" value={mFront} set={(x) => setMFront(Math.round(x))} min={1} max={8} step={1} unit="辆" disabled={!useMulti} />
+            <Slider label="后视车辆数 m₋" value={mBack} set={(x) => setMBack(Math.round(x))} min={1} max={8} step={1} unit="辆" disabled={!useMulti} />
+          </>}
+          {feedbackModal === "rear" && <>
+            <Slider label="后向间距权重 p" value={rearP} set={setRearP} min={0} max={0.8} step={0.005} unit="" disabled={!useRearGap} />
+            <div className="tsl-live-note">后向间距反馈既改变稳定带，也会把长波传播速度乘以 (1−p)。</div>
+          </>}
+          {feedbackModal === "delay" && <>
+            <Slider label="反应延迟 τ₀" value={tau0} set={setTau0} min={0} max={1.6} step={0.02} unit="s" disabled={!useDelay} />
+            <Slider label="通信延迟 τₐ" value={tauA} set={setTauA} min={0} max={1.6} step={0.02} unit="s" disabled={!useDelay || (!useFF && !useBackAcc)} />
+          </>}
+          {feedbackModal === "hetero" && <>
+            <Slider label="重型 / 保守车辆占比" value={heavyShare} set={setHeavyShare} min={0} max={0.8} step={0.01} unit="" disabled={!useHetero} />
+            <select className="tsl-select" value={arrangement} disabled={!useHetero && !useMixed} onChange={(event) => setArrangement(event.target.value)}>
+              <option>均匀</option><option>随机</option><option>连续</option><option>成组</option>
+            </select>
+          </>}
+          {feedbackModal === "mixed" && <>
+            <Slider label="AV 渗透率" value={avShare} set={setAvShare} min={0} max={1} step={0.01} unit="" disabled={!useMixed} />
+            <Slider label="AV–HV 降级增益 κ₀" value={kappa0} set={setKappa0} min={0} max={0.5} step={0.01} unit="" disabled={!useMixed} />
+            <Slider label="AV 编组数" value={avGroups} set={(x) => setAvGroups(Math.round(x))} min={1} max={12} step={1} unit="组" disabled={!useMixed || arrangement !== "成组"} />
+          </>}
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 12 }}>
+            <button className="tsl-chip" type="button" onClick={() => { setSettingsOpen(true); setFeedbackModal(null); }}>打开完整参数</button>
+            <button className="tsl-btn" type="button" onClick={() => setFeedbackModal(null)} style={{ border: "none", background: CLR.teal, color: "#fff", padding: "7px 12px", cursor: "pointer" }}>完成</button>
+          </div>
+        </MiniModal>
+      )}
     </div>
   );
 }
