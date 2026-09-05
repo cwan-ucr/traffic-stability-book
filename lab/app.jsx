@@ -2308,7 +2308,7 @@ function App() {
             <Slider label="AV–HV 降级增益 κ₀" value={kappa0} set={setKappa0} min={0} max={0.5} step={0.01} unit="" disabled={!useMixed} />
             <Slider label="AV 编组数" value={avGroups} set={(x) => setAvGroups(Math.round(x))} min={1} max={12} step={1} unit="组" disabled={!useMixed || arrangement !== "成组"} />
             <select className="tsl-select" value={arrangement} disabled={!useHetero && !useMixed} onChange={(e) => setArrangement(e.target.value)} aria-label="车辆排列方式">
-              <option>均匀</option><option>随机</option><option>连续</option><option>成组</option>
+              <option value="均匀">均匀</option><option value="随机">随机</option><option value="连续">连续</option><option value="成组">成组</option>
             </select>
           </Group>
 
@@ -2587,7 +2587,7 @@ function App() {
           {feedbackModal === "hetero" && <>
             <Slider label="重型 / 保守车辆占比" value={heavyShare} set={setHeavyShare} min={0} max={0.8} step={0.01} unit="" disabled={!useHetero} />
             <select className="tsl-select" value={arrangement} disabled={!useHetero && !useMixed} onChange={(event) => setArrangement(event.target.value)}>
-              <option>均匀</option><option>随机</option><option>连续</option><option>成组</option>
+              <option value="均匀">均匀</option><option value="随机">随机</option><option value="连续">连续</option><option value="成组">成组</option>
             </select>
           </>}
           {feedbackModal === "mixed" && <>
