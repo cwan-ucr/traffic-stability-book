@@ -582,6 +582,8 @@ function MiniModal({ title, subtitle, onClose, children }) {
 const CSS = `
 .tsl-shell{max-width:1540px;margin:0 auto;padding:16px 18px 36px}
 .tsl-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.tsl-case-strip{max-width:1504px;margin:13px auto 0;padding:9px 12px;background:#eaf3ef;border:1px solid ${CLR.teal};display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:11px;line-height:1.45}
+.tsl-case-strip b{display:block;color:${CLR.teal};font-size:12px}.tsl-case-strip span{color:${CLR.ink}}
 .tsl-tabs{display:flex;gap:4px;overflow-x:auto;border-bottom:1px solid ${CLR.rule};padding:0 18px;background:${CLR.panel}}
 .tsl-tab{border:0;border-bottom:3px solid transparent;background:transparent;color:${CLR.soft};padding:11px 15px 9px;cursor:pointer;white-space:nowrap;font-size:12px}
 .tsl-tab.on{color:${CLR.ink};border-bottom-color:${CLR.blue};font-weight:600}
@@ -599,6 +601,11 @@ const CSS = `
 .tsl-scenario-tile b{font-size:10px;color:${CLR.ink};line-height:1.15}.tsl-scenario-tile span{font-size:8.5px;line-height:1.15}
 .tsl-scenario-tile.on{border-color:${CLR.teal};background:#eaf3ef;box-shadow:inset 0 0 0 1px ${CLR.teal}}
 .tsl-scenario-tile.on .symbol{color:${CLR.teal}}
+.tsl-core-controls{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tsl-core-button{border:1px solid ${CLR.rule};background:${CLR.paper};color:${CLR.ink};padding:10px;text-align:left;cursor:pointer;min-width:0}
+.tsl-core-button:hover{border-color:${CLR.blue};background:#edf1f4}
+.tsl-core-button .symbol{display:block;color:${CLR.blue};font:700 15px/1 ui-monospace,monospace;margin-bottom:6px}
+.tsl-core-button b{display:block;font-size:11.5px;margin-bottom:4px}.tsl-core-button small{display:block;color:${CLR.soft};font-size:9.5px;line-height:1.35}
 .tsl-modal-backdrop{position:fixed;inset:0;z-index:1200;background:rgba(22,35,29,.28);display:grid;place-items:center;padding:18px}
 .tsl-mini-modal{width:min(420px,100%);max-height:calc(100vh - 36px);overflow:auto;background:${CLR.panel};border:1px solid ${CLR.rule};box-shadow:0 18px 55px rgba(20,37,29,.28);padding:14px}
 .tsl-modal-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;border-bottom:1px solid ${CLR.rule};padding-bottom:9px;margin-bottom:12px}.tsl-modal-head b{display:block;font-size:14px}.tsl-modal-head span{display:block;font-size:10px;color:${CLR.soft};margin-top:3px;line-height:1.4}
@@ -673,6 +680,7 @@ const CSS = `
   .tsl-statusline{grid-template-columns:repeat(2,1fr)}
   .tsl-ring-canvas{max-height:none}
   .tsl-scenario-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tsl-case-strip{margin:10px 12px 0;align-items:flex-start;flex-direction:column}
   .tsl-main.settings{padding:10px}
   .tsl-main.settings>.tsl-side{grid-template-columns:1fr}
 }
@@ -897,9 +905,97 @@ function analyzeTheorySnapshot({ se, P, eff, N, useHetero, useMixed, avShare, ar
 }
 
 /* ============================================================
+   书稿直达链接：PDF 中的 ?case=… 会定位到对应实验分区，并给出复现口径。
+   ============================================================ */
+const BOOK_CASES = {
+  L01: { tab: "live", title: "局部稳定、临界阻尼与欠阻尼恢复", hint: "保持 S0；用完整参数把平衡工作点与 IDM 偏导带入局部二阶根，再在探针页观察恢复。" },
+  W01: { tab: "live", title: "三辆 IDM 的两个 RK4 更新步", hint: "设置 N=3 后打开完整参数；书中 W01 给出与环道仿真相同的同步 RK4 子步。" },
+  M01: { tab: "live", title: "局部欠阻尼恢复与 RK4 超调", hint: "本案例的解析根与 RK4 更新见书中 M01；实验台用于观察同类扰动的探针响应。" },
+  M02: { tab: "live", title: "有限环道与离散波长", hint: "依次比较 N=12、20、30，并在理论与验证区检查最低允许波数。" },
+  E1: { tab: "live", title: "中性稳定线扫描", hint: "保持 S0，扫描密度或环道长度；目标是寻找当前理论由稳定变为失稳的边界。" },
+  E2: { tab: "live", title: "线性增长率与角频率拟合", hint: "保持 S0、小幅扰动；运行后在理论与验证区比对解析谱与实测增长率。" },
+  E3: { tab: "live", title: "最不稳定离散波数", hint: "保持 S0，运行后在传播与探针区查看时空图，并用理论谱核对主导模态。" },
+  E4: { tab: "live", title: "前车加速度前馈的逐车传递比", hint: "启用前车加速度图标，取 κ=0.15；在理论与验证区比较频率响应。" },
+  E5: { tab: "live", title: "有限 N 效应", hint: "保持 S0，逐次调整车辆数 N；危险长波只会在足够大的环道中出现。" },
+  E6: { tab: "live", title: "异质车流的排列效应", hint: "启用 HV 图标，固定配方后依次选择均匀、随机、连续和成组排列。" },
+  E7: { tab: "live", title: "AV 渗透率、速度与编组二维稳定域", hint: "启用 AV 图标；改变渗透率、编组数与 κ₀，并在理论区读取二维稳定平面。" },
+  E8: { tab: "live", title: "反应与通信延迟的频域扫描", hint: "启用时间延迟图标，扫描 τ₀ 与 τₐ；低频门槛不变，有限频率响应会改变。" },
+  E9: { tab: "live", title: "后向间距权重与稳定带闭合", hint: "启用后向间距图标，扫描 p 并比较理论稳定带。" },
+  E10: { tab: "live", title: "后向反馈下的长波传播速度", hint: "启用后向间距图标；在传播页量取色带斜率并与理论波速比较。" },
+  S0: { tab: "live", title: "原始 IDM 的 1800 s 稳定／失稳轨迹", hint: "保持 S0；分别设置书中稳定与失稳工作点，运行后转到传播与探针查看位置--时间轨迹、速度和间距。" },
+  S1: { tab: "live", title: "前车加速度前馈的轨迹对照", hint: "启用前车加速度图标并设置 κ=0.15；与 S0 的同一扰动作单因素比较。" },
+  S2: { tab: "live", title: "双向加速度耦合的轨迹对照", hint: "依次启用前车和后车加速度图标，取 (κ,fᵦ)=(0.30,0.10)。" },
+  S3: { tab: "live", title: "多前／后车反馈的空间分配", hint: "启用多车信息图标，并在弹窗中设置 α、β、m₊ 与 m₋。" },
+  S4: { tab: "live", title: "后向间距反馈的轨迹对照", hint: "启用后向间距图标，比较 p=0 与书中稳定化权重下的时空图。" },
+  S5: { tab: "live", title: "时间延迟诱发走停波", hint: "启用时间延迟图标，保持其他参数不变，只扫描 τ₀ 或 τₐ。" },
+  S6: { tab: "live", title: "异质车流的三种排序轨迹", hint: "启用 HV 图标；固定配方，比较不同排序下的中途放大和探针曲线。" },
+  S7: { tab: "live", title: "AV/HDV 混合编组的稳定平面", hint: "启用 AV 图标，扫描渗透率与平衡速度，并改变编组数。" },
+  M03: { tab: "live", title: "原始 IDM 单模态包络", hint: "使用 S0 的小幅单模态扰动；稳定与失稳工作点只改变平衡速度。" },
+  M04: { tab: "live", title: "运行中开启前车加速度反馈", hint: "先让 S0 形成波动，再通过 κ 图标在线设置 κ=0.25；不要重置车辆状态。" },
+  M05: { tab: "live", title: "时间步长收敛检查", hint: "对同一工况分别取 Δt 和 Δt/2，比较增长率、波速和临界点。" },
+  E3B: { tab: "live", title: "双向加速度隐式耦合的环道谱", hint: "启用前/后车加速度，理论判据需要检查全部离散波数而非只看长波。" },
+  E3M: { tab: "live", title: "多前／后车信息的空间分配", hint: "启用多车信息；固定加速度核总量后，比较不同空间衰减的有限波长结果。" },
+  E11: { tab: "nonlinear", title: "有限幅扰动的波形陡化与非线性饱和", hint: "已定位到非线性现象页；用选择器切换剖面陡化、饱和、孤波/kink 和触发恢复证据。" },
+  E12: { tab: "nonlinear", title: "稳定工况下的有限幅制动恢复", hint: "已定位到非线性现象页；选择有限幅恢复并查看恢复时间与残余波动。" },
+  M06: { tab: "live", title: "IDM 基本图下的 LWR 激波", hint: "书中 M06 与 W02 给出有限体积更新；在线实验台用于把微观位置--时间图与宏观守恒波联系起来。" },
+  W02: { tab: "live", title: "四格 LWR 有限体积更新", hint: "书中 W02 展开四格的通量和两个时间步；可对照平台中的宏观稳定性实验。" },
+  W03: { tab: "live", title: "三格 ARZ 守恒量、通量与松弛更新", hint: "书中 W03 展开 ARZ 两个更新步；可对照 E13--E14 的宏观稳定性结果。" },
+  E13: { tab: "live", title: "IDM 一致 ARZ 的稳定／失稳谱实验", hint: "书中 E13 给出完整 ARZ 谱推进与时空图；本平台用于核验共享 IDM 工作点的微观证据。" },
+  E14: { tab: "live", title: "IDM 与 ARZ 的速度时空图对照", hint: "书中 E14 的宏微观图使用相同 IDM 平衡态与长波；平台可复核微观端的位置--时间轨迹。" },
+  D01: { tab: "data", title: "NGSIM US--101 自然扰动传播证据", hint: "已定位到真实数据页；阅读片段筛选、增益、时滞及其不确定性。" },
+  D02: { tab: "data", title: "稳定性标定、留出验证与谱约束优化", hint: "真实数据页给出 D01 证据；书中 D02 再将其用于标定、递推验证与反事实优化。" },
+  A01: { tab: "applications", application: "open", title: "开放车队中的协同 AV 稳定性收益", hint: "已定位到案例 A；比较 HDV 与协同 AV 的两张位置--时间图和指定车辆速度曲线。" },
+  A02: { tab: "applications", application: "bottleneck", title: "低速瓶颈下的事件触发型固定 VSL", hint: "已定位到案例 B；VSL 只在慢车事件发生后开启，并以稳定裕度选择 114 km/h。" },
+};
+
+const BOOK_CASES_EN = {
+  L01: { title: "Local Stability, Critical Damping, and Underdamped Recovery", hint: "Keep S0 active. Use the IDM parameters to evaluate the local second-order roots at the equilibrium point, then inspect recovery on the probe page." },
+  W01: { title: "Two RK4 Steps for Three IDM Vehicles", hint: "Set N=3 and open the scenario parameters. W01 uses the same synchronous RK4 substeps as the ring-road simulation." },
+  M01: { title: "Local Underdamped Recovery and RK4 Overshoot", hint: "The analytical roots and RK4 update appear in M01; use the laboratory to inspect the probe response to a comparable disturbance." },
+  M02: { title: "Finite Ring Road and Discrete Wavelengths", hint: "Compare N=12, 20, and 30 in sequence, then inspect the lowest admissible wavenumber under Theory and Validation." },
+  E1: { title: "Neutral-Stability Line Scan", hint: "Keep S0 active and scan density or ring length to locate where the current theoretical verdict changes from stable to unstable." },
+  E2: { title: "Fitting Linear Growth Rate and Angular Frequency", hint: "Keep S0 active with a small disturbance, then compare the analytical spectrum with the measured growth rate under Theory and Validation." },
+  E3: { title: "Most Unstable Discrete Wavenumber", hint: "Keep S0 active, run the simulation, inspect the spatiotemporal diagram under Propagation and Probe, and compare the dominant mode with the theoretical spectrum." },
+  E4: { title: "Vehicle-to-Vehicle Transfer Ratio with Leader-Acceleration Feedforward", hint: "Enable the leader-acceleration tile and set κ=0.15, then compare the frequency responses under Theory and Validation." },
+  E5: { title: "Finite-N Effect", hint: "Keep S0 active and vary the vehicle count N. Dangerous long waves appear only when the ring is sufficiently large." },
+  E6: { title: "Arrangement Effects in Heterogeneous Traffic", hint: "Enable the HV tile, keep the mixture fixed, and compare uniform, random, contiguous, and grouped arrangements." },
+  E7: { title: "AV Penetration, Speed, and Platooning Stability Plane", hint: "Enable the AV tile, vary penetration, platoon count, and κ₀, then inspect the two-dimensional stability plane under Theory and Validation." },
+  E8: { title: "Frequency-Domain Scan of Reaction and Communication Delays", hint: "Enable the delay tile and scan τ₀ and τₐ. The low-frequency threshold remains unchanged while the finite-frequency response varies." },
+  E9: { title: "Rear-Gap Weight and Stability-Band Closure", hint: "Enable the rear-gap tile, scan p, and compare the resulting theoretical stability bands." },
+  E10: { title: "Long-Wave Propagation Speed with Rear Feedback", hint: "Enable the rear-gap tile, measure the slope of the color bands on the propagation page, and compare it with the theoretical wave speed." },
+  S0: { title: "Original IDM: 1800 s Stable and Unstable Trajectories", hint: "Keep S0 active, enter the stable and unstable operating points from the book, run the simulation, and inspect position-time trajectories, speed, and spacing." },
+  S1: { title: "Trajectory Comparison with Leader-Acceleration Feedforward", hint: "Enable the leader-acceleration tile and set κ=0.15, then compare it with S0 under the same disturbance." },
+  S2: { title: "Trajectory Comparison with Bidirectional Acceleration Coupling", hint: "Enable the leader- and follower-acceleration tiles and set (κ, fᵦ)=(0.30, 0.10)." },
+  S3: { title: "Spatial Allocation of Multi-Leader and Multi-Follower Feedback", hint: "Enable the multi-vehicle-information tile and set α, β, m₊, and m₋ in its dialog." },
+  S4: { title: "Trajectory Comparison with Rear-Gap Feedback", hint: "Enable the rear-gap tile and compare p=0 with the stabilizing weight used in the book." },
+  S5: { title: "Stop-and-Go Waves Induced by Time Delay", hint: "Enable the delay tile, keep the other parameters fixed, and scan only τ₀ or τₐ." },
+  S6: { title: "Three Arrangement Trajectories for Heterogeneous Traffic", hint: "Enable the HV tile, keep the mixture fixed, and compare transient amplification and probe traces across arrangements." },
+  S7: { title: "Stability Plane for Mixed AV/HDV Platoons", hint: "Enable the AV tile, scan penetration and equilibrium speed, and vary the number of platoons." },
+  M03: { title: "Single-Mode Envelope of the Original IDM", hint: "Use the small single-mode disturbance from S0. The stable and unstable operating points differ only in equilibrium speed." },
+  M04: { title: "Enabling Leader-Acceleration Feedback During a Run", hint: "Let waves develop under S0, then set κ=0.25 online through the κ tile without resetting the vehicle state." },
+  M05: { title: "Time-Step Convergence Check", hint: "Run the same case with Δt and Δt/2, then compare growth rate, wave speed, and the critical point." },
+  E3B: { title: "Ring Spectrum with Implicit Bidirectional Acceleration Coupling", hint: "Enable leader- and follower-acceleration feedback. The theoretical criterion must inspect every discrete wavenumber, not only the long-wave limit." },
+  E3M: { title: "Spatial Allocation of Multi-Leader and Multi-Follower Information", hint: "Enable multi-vehicle information, keep the total acceleration-kernel weight fixed, and compare finite-wavelength results across spatial decays." },
+  E11: { title: "Waveform Steepening and Nonlinear Saturation under Finite Disturbances", hint: "The Nonlinear Phenomena page is open. Use its selector to compare steepening, saturation, solitary-wave or kink evidence, and triggered recovery." },
+  E12: { title: "Finite-Braking Recovery in a Stable Regime", hint: "The Nonlinear Phenomena page is open. Select finite-amplitude recovery and inspect recovery time and residual oscillation." },
+  M06: { title: "LWR Shock under the IDM Fundamental Diagram", hint: "M06 and W02 provide the finite-volume update. Use the laboratory to connect microscopic position-time diagrams with macroscopic conservation waves." },
+  W02: { title: "Two Finite-Volume Updates on Four LWR Cells", hint: "W02 expands the fluxes and two time steps for four cells; compare them with the laboratory's macroscopic stability experiments." },
+  W03: { title: "Conserved Variables, Fluxes, and Relaxation on Three ARZ Cells", hint: "W03 expands two ARZ updates for three cells; compare them with the macroscopic stability results in E13 and E14." },
+  E13: { title: "Stable and Unstable Spectra of an IDM-Consistent ARZ Model", hint: "E13 presents the full ARZ spectral evolution and spatiotemporal diagram; use this laboratory to verify microscopic evidence at the shared IDM operating point." },
+  E14: { title: "Comparison of IDM and ARZ Speed Fields", hint: "E14 uses the same IDM equilibrium and long-wave disturbance in both models; use the laboratory to reproduce the microscopic position-time trajectories." },
+  D01: { title: "Natural Disturbance Propagation in NGSIM US-101", hint: "The Empirical Data page is open. Review episode screening, gain, delay, and their uncertainty." },
+  D02: { title: "Stability Calibration, Holdout Validation, and Spectrum-Constrained Optimization", hint: "The Empirical Data page presents the D01 evidence; D02 then uses it for calibration, recursive validation, and counterfactual optimization." },
+  A01: { title: "Stability Benefits of Cooperative AVs in an Open Platoon", hint: "Application A is open. Compare the HDV and cooperative-AV position-time diagrams and the selected-vehicle speed traces." },
+  A02: { title: "Event-Triggered Fixed VSL at a Slow-Vehicle Bottleneck", hint: "Application B is open. The VSL activates only after the slow-vehicle event and selects 114 km/h using the stability margin." },
+};
+
+/* ============================================================
    主组件
    ============================================================ */
 function App() {
+  const linkedCaseId = typeof window === "undefined" ? "" : new URLSearchParams(window.location.search).get("case") || "";
+  const linkedCase = BOOK_CASES[linkedCaseId] || null;
+  const linkedCaseCopy = linkedCase && window.TSL_I18N?.language === "en" ? BOOK_CASES_EN[linkedCaseId] : linkedCase;
   const [P, setP] = useState({ v0: 33.3, T: 1.5, s0: 2.0, a: 1.0, b: 1.5, delta: 4 });
   const [N, setN] = useState(60);
   const [rho, setRho] = useState(28);      // veh/km
@@ -933,13 +1029,13 @@ function App() {
   const [kappa0, setKappa0] = useState(0.15);
   const [selectedVehicle, setSelectedVehicle] = useState(0);
   const [fieldMode, setFieldMode] = useState("速度");
-  const [activeTab, setActiveTab] = useState("live");
-  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState(() => linkedCase ? linkedCase.tab : "live");
+  const [parameterModal, setParameterModal] = useState(null);
   const [feedbackModal, setFeedbackModal] = useState(null);
-  const [nonlinearCase, setNonlinearCase] = useState("steepening");
+  const [nonlinearCase, setNonlinearCase] = useState(() => linkedCaseId === "E12" ? "recovery" : "steepening");
   const [nonlinearTimeIndex, setNonlinearTimeIndex] = useState(4);
   const [nonlinearAmplitude, setNonlinearAmplitude] = useState(1.0);
-  const [applicationCase, setApplicationCase] = useState("open");
+  const [applicationCase, setApplicationCase] = useState(() => linkedCase && linkedCase.application ? linkedCase.application : "open");
   const [applicationProbeIndex, setApplicationProbeIndex] = useState(3);
   const [ringFocus, setRingFocus] = useState(false);
   const [rampDuration, setRampDuration] = useState(120);
@@ -1906,11 +2002,11 @@ function App() {
             <div style={{
               padding: "3px 9px", fontWeight: 700, fontSize: 10.5, letterSpacing: "0.05em",
               color: "#fff", background: verdictColor(currentVerdict),
-            }} title={`当前已应用参数；${currentTheory ? currentTheory.statusBasis : "无可用判据"}`}>当前{currentVerdict}</div>
+            }} title={`当前已应用参数；${currentTheory ? currentTheory.statusBasis : "无可用判据"}`}>当前 {currentVerdict}</div>
             <div style={{
               padding: "3px 9px", fontWeight: 700, fontSize: 10.5, letterSpacing: "0.05em",
               color: "#fff", background: verdictColor(targetVerdict), opacity: parametersPending ? 1 : 0.58,
-            }} title={`控制面板目标参数；${theory ? theory.statusBasis : "无可用判据"}`}>目标{targetVerdict}</div>
+            }} title={`控制面板目标参数；${theory ? theory.statusBasis : "无可用判据"}`}>目标 {targetVerdict}</div>
           </div>
         </div>
       </div>
@@ -1928,6 +2024,16 @@ function App() {
             aria-selected={activeTab === key} onClick={() => setActiveTab(key)}>{label}</button>
         ))}
       </nav>
+
+      {linkedCase && (
+        <div className="tsl-case-strip" role="status">
+          <div><b>{window.TSL_I18N?.language === "en" ? "Book case" : "书中"} {linkedCaseId} · {linkedCaseCopy.title}</b><span>{linkedCaseCopy.hint}</span></div>
+          <button className="tsl-chip" type="button" onClick={() => {
+            setActiveTab(linkedCase.tab);
+            if (linkedCase.tab === "live") setParameterModal("scenario");
+          }}>{linkedCase.tab === "live" ? "调整场景参数" : "查看案例"}</button>
+        </div>
+      )}
 
       <div className={`tsl-shell ${ringFocus ? "tsl-focus" : ""}`}
         style={{ display: activeTab === "live" || activeTab === "propagation" ? "block" : "none" }}>
@@ -1958,6 +2064,22 @@ function App() {
                     </button>
                   ))}
                 </div>
+              </Card>
+
+              <Card title="基础参数" note="无需离开仿真页面">
+                <div className="tsl-core-controls">
+                  <button className="tsl-core-button" type="button" onClick={() => setParameterModal("idm")}>
+                    <span className="symbol">IDM</span>
+                    <b>IDM 基本参数</b>
+                    <small>T={P.T.toFixed(2)} s · a={P.a.toFixed(2)} · b={P.b.toFixed(2)}</small>
+                  </button>
+                  <button className="tsl-core-button" type="button" onClick={() => setParameterModal("scenario")}>
+                    <span className="symbol">RING</span>
+                    <b>场景参数</b>
+                    <small>N={N} · ρ={rhoNow.toFixed(1)} veh/km · L={(Lring / 1000).toFixed(2)} km</small>
+                  </button>
+                </div>
+                <div className="tsl-live-note">IDM 或环道几何改变后按新的均匀平衡态重建仿真；反馈参数仍可通过上方图标不中断地在线施加。</div>
               </Card>
 
               <Card title="运行控制" note="不中断仿真">
@@ -2225,13 +2347,7 @@ function App() {
         </section>
       </div>
 
-      <div className={`tsl-main ${(activeTab === "settings" || (activeTab === "live" && settingsOpen)) ? "settings" : ""}`}>
-        {(activeTab === "settings" || (activeTab === "live" && settingsOpen)) && (
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12, marginBottom: 14 }}>
-            <div><b style={{ fontSize: 14 }}>完整参数面板</b><span style={{ display: "block", marginTop: 3, fontSize: 10.5, color: CLR.soft }}>修改后会立刻更新目标理论；运行中的车辆状态保持不重置。</span></div>
-            {activeTab === "live" && <button className="tsl-chip" type="button" onClick={() => setSettingsOpen(false)}>收起</button>}
-          </div>
-        )}
+      <div className={`tsl-main ${activeTab === "theory" ? "theory" : ""}`}>
         {/* 左侧控制栏 */}
         <div className="tsl-side" style={{ borderRight: `1px solid ${CLR.rule}`, background: CLR.paper }}>
           <Group title="场景">
@@ -2540,6 +2656,42 @@ function App() {
         </div>
       </div>
 
+      {parameterModal === "idm" && (
+        <MiniModal title="IDM 基本参数" subtitle="控制原始 IDM 的自由流、跟驰和制动响应。修改后将从新的均匀平衡态重新开始。" onClose={() => setParameterModal(null)}>
+          <Slider label="期望速度 v₀" value={P.v0} set={(x) => setP({ ...P, v0: x })} min={10} max={40} step={0.1} unit="m/s" />
+          <Slider label="安全时距 T" value={P.T} set={(x) => setP({ ...P, T: x })} min={0.6} max={3} step={0.05} unit="s" />
+          <Slider label="最小间距 s₀" value={P.s0} set={(x) => setP({ ...P, s0: x })} min={0.5} max={8} step={0.1} unit="m" />
+          <Slider label="最大加速度 aₘₐₓ" value={P.a} set={(x) => setP({ ...P, a: x })} min={0.2} max={3} step={0.05} unit="m/s²" />
+          <Slider label="舒适减速度 b" value={P.b} set={(x) => setP({ ...P, b: x })} min={0.5} max={4} step={0.05} unit="m/s²" />
+          <Slider label="加速度指数 δ" value={P.delta} set={(x) => setP({ ...P, delta: x })} min={1} max={8} step={1} unit="" />
+          <div className="tsl-live-note">当前工作点：sₑ={se.toFixed(2)} m，vₑ={theory ? theory.ve.toFixed(2) : "—"} m/s。减小 T 或改变 a、b 后，理论稳定域和仿真初始平衡态会同步更新。</div>
+          <div style={{ display: "flex", justifyContent: "space-between", gap: 8, marginTop: 12 }}>
+            <button className="tsl-chip" type="button" onClick={() => setP({ v0: 33.3, T: 1.5, s0: 2.0, a: 1.0, b: 1.5, delta: 4 })}>恢复默认 IDM</button>
+            <button className="tsl-btn" type="button" onClick={() => setParameterModal(null)} style={{ border: "none", background: CLR.teal, color: "#fff", padding: "7px 12px", cursor: "pointer" }}>完成</button>
+          </div>
+        </MiniModal>
+      )}
+
+      {parameterModal === "scenario" && (
+        <MiniModal title="场景参数" subtitle="设置环道规模、交通密度、扰动和数值积分参数。修改后将从新的均匀平衡态重新开始。" onClose={() => setParameterModal(null)}>
+          <div style={{ display: "flex", gap: 5, marginBottom: 10 }}>
+            <button className={`tsl-chip ${!fixedLength ? "on" : ""}`} type="button" onClick={() => setFixedLength(false)}>密度控制</button>
+            <button className={`tsl-chip ${fixedLength ? "on" : ""}`} type="button" onClick={() => setFixedLength(true)}>周长控制</button>
+          </div>
+          <Slider label="车辆数 N" value={N} set={(x) => setN(Math.round(x))} min={12} max={160} step={1} unit="辆" />
+          <Slider label="密度 ρ" value={fixedLength ? rhoNow : rho} set={(x) => { setRho(x); setFixedLength(false); }} min={6} max={110} step={0.5} unit="veh/km" disabled={fixedLength} />
+          <Slider label="环道周长 L" value={Lring / 1000} set={(x) => { setRingLength(x); setFixedLength(true); }} min={0.2} max={8} step={0.01} unit="km" disabled={!fixedLength} />
+          <Slider label="车长 l" value={l} set={setL} min={3} max={16} step={0.5} unit="m" />
+          <Slider label="初始扰动幅值" value={pert} set={setPert} min={0.005} max={1} step={0.005} unit="m/s" />
+          <Slider label="积分步长 dt" value={dt} set={setDt} min={0.005} max={0.05} step={0.005} unit="s" />
+          <Slider label="观测车辆" value={selectedVehicle} set={(x) => setSelectedVehicle(Math.round(x))} min={0} max={Math.max(0, N - 1)} step={1} unit="号" />
+          <div className="tsl-live-note">ρ={rhoNow.toFixed(2)} veh/km · L={(Lring / 1000).toFixed(2)} km · 平均净间距={se.toFixed(2)} m。密度控制时 L 随 N、ρ 联动；周长控制时 ρ 随 N、L 联动。</div>
+          <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 12 }}>
+            <button className="tsl-btn" type="button" onClick={() => setParameterModal(null)} style={{ border: "none", background: CLR.teal, color: "#fff", padding: "7px 12px", cursor: "pointer" }}>完成</button>
+          </div>
+        </MiniModal>
+      )}
+
       {feedbackModal && activeFeedback && (
         <MiniModal title={activeFeedback.title} subtitle="打开后即可在线修改；运行中的车辆状态不会被重置。" onClose={() => setFeedbackModal(null)}>
           <label className="tsl-modal-toggle">
@@ -2591,7 +2743,8 @@ function App() {
             <Slider label="AV 编组数" value={avGroups} set={(x) => setAvGroups(Math.round(x))} min={1} max={12} step={1} unit="组" disabled={!useMixed || arrangement !== "成组"} />
           </>}
           <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 12 }}>
-            <button className="tsl-chip" type="button" onClick={() => { setSettingsOpen(true); setFeedbackModal(null); }}>打开完整参数</button>
+            <button className="tsl-chip" type="button" onClick={() => { setParameterModal("idm"); setFeedbackModal(null); }}>IDM 基本参数</button>
+            <button className="tsl-chip" type="button" onClick={() => { setParameterModal("scenario"); setFeedbackModal(null); }}>场景参数</button>
             <button className="tsl-btn" type="button" onClick={() => setFeedbackModal(null)} style={{ border: "none", background: CLR.teal, color: "#fff", padding: "7px 12px", cursor: "pointer" }}>完成</button>
           </div>
         </MiniModal>
